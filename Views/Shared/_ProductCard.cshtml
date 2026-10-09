@@ -1,39 +1,43 @@
 @model MyWebShop.Models.Entities.Product
 
-<div class="product-card">
-    <div class="product-thumb-container">
+<div class="product-card-modern">
+    <div class="card-img-wrap">
         <a asp-controller="Product" asp-action="Details" asp-route-slug="@Model.Slug">
             <img src="@(Model.MainImageUrl ?? "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80")" 
                  alt="@Model.Name" 
-                 class="product-thumb" 
+                 class="card-img-thumb" 
                  loading="lazy" />
         </a>
 
         @if (Model.DiscountPercentage > 0)
         {
-            <div class="badge-sale">-@Model.DiscountPercentage%</div>
+            <div class="card-badge-discount">-@Model.DiscountPercentage%</div>
         }
 
         @if (Model.IsNew)
         {
-            <div class="badge-tag">MỚI</div>
+            <div class="card-badge-tag tag-new">MỚI</div>
         }
         else if (Model.IsBestSeller)
         {
-            <div class="badge-tag" style="background: rgba(234, 88, 12, 0.85);">BÁN CHẠY</div>
+            <div class="card-badge-tag tag-best">BÁN CHẠY</div>
+        }
+        else if (Model.IsFeatured)
+        {
+            <div class="card-badge-tag tag-hot">HOT</div>
         }
     </div>
 
-    <div class="product-body">
-        <div class="product-category-name">
-            @(Model.Category?.Name ?? "Công nghệ")
+    <div class="card-details-body">
+        <div class="card-cat-label">
+            @(Model.Category?.Name ?? "Thiết bị chính hãng")
         </div>
 
-        <a asp-controller="Product" asp-action="Details" asp-route-slug="@Model.Slug" class="product-title" title="@Model.Name">
+        <a asp-controller="Product" asp-action="Details" asp-route-slug="@Model.Slug" class="card-prod-title" title="@Model.Name">
             @Model.Name
         </a>
 
-        <div class="product-rating">
+        <div class="card-rating-row">
             @for (int i = 1; i <= 5; i++)
             {
                 if (i <= Math.Round(Model.RatingAverage))
@@ -45,33 +49,33 @@
                     <i class="bi bi-star text-muted"></i>
                 }
             }
-            <span class="rating-text">(@Model.ReviewCount)</span>
-            <span class="text-muted ms-auto" style="font-size: 0.75rem;">
+            <span class="card-rating-text">(@Model.ReviewCount)</span>
+            <span class="card-stock-label">
                 @(Model.IsInStock ? $"Còn {Model.StockQuantity}" : "Hết hàng")
             </span>
         </div>
 
-        <div class="product-price-row">
-            <span class="price-current">@Model.Price.ToString("#,##0")₫</span>
+        <div class="card-price-row">
+            <span class="price-red-bold">@Model.Price.ToString("#,##0")₫</span>
             @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price)
             {
-                <span class="price-original">@Model.OriginalPrice.Value.ToString("#,##0")₫</span>
+                <span class="price-strike-gray">@Model.OriginalPrice.Value.ToString("#,##0")₫</span>
             }
         </div>
 
-        <div class="product-actions mt-auto">
+        <div class="card-btn-grid mt-auto">
             @if (Model.IsInStock)
             {
-                <button type="button" class="btn-add-cart" onclick="addToCart(@Model.Id, 1, this)">
+                <button type="button" class="btn-card-cart" onclick="addToCart(@Model.Id, 1, this)" title="Thêm vào giỏ">
                     <i class="bi bi-cart-plus"></i> Thêm giỏ
                 </button>
-                <a asp-controller="Checkout" asp-action="BuyNow" asp-route-productId="@Model.Id" asp-route-quantity="1" class="btn-buy-now">
-                    <i class="bi bi-bag-check-fill me-1"></i> Mua ngay
+                <a asp-controller="Checkout" asp-action="BuyNow" asp-route-productId="@Model.Id" asp-route-quantity="1" class="btn-card-buy" title="Mua ngay">
+                    <i class="bi bi-lightning-fill"></i> Mua ngay
                 </a>
             }
             else
             {
-                <button type="button" class="btn btn-secondary w-100 btn-sm disabled" disabled>
+                <button type="button" class="btn btn-secondary w-100 btn-sm disabled py-1" disabled style="grid-column: span 2; font-size: 0.75rem;">
                     Tạm hết hàng
                 </button>
             }

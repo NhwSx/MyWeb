@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <!-- Custom CSS -->
+    <!-- Custom CSS Design System -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
@@ -28,60 +28,93 @@
         <input type="hidden" id="server-error-msg" value="@TempData["ErrorMessage"]" />
     }
 
-    <!-- Top Announcement Bar -->
-    <div class="top-announcement d-none d-md-block">
+    <!-- =========================================================
+         A. THANH QUẢNG CÁO TRÊN CÙNG (TOP PROMOTION BANNER)
+         ========================================================= -->
+    <div id="topPromoBanner" class="top-promo-banner py-2">
         <div class="container d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-3">
-                <span><i class="bi bi-truck me-1"></i> Miễn phí vận chuyển đơn hàng từ 10.000.000đ</span>
-                <span>•</span>
-                <span><i class="bi bi-tag-fill me-1"></i> Nhập <strong>GIAM10</strong> để giảm ngay 10%</span>
+            <div class="d-flex align-items-center gap-2 flex-grow-1 justify-content-center justify-content-md-start">
+                <span class="badge bg-white text-danger fw-bold rounded-pill px-2 py-1 small">HOT</span>
+                <span class="small d-none d-sm-inline">
+                    🔥 <strong>SIÊU HỘI MUA SẮM 2026:</strong> Giảm đến 50% toàn bộ sản phẩm! Nhập mã <strong>GIAM10</strong> giảm thêm 10%.
+                </span>
+                <span class="small d-inline d-sm-none">
+                    🔥 Giảm đến 50% - Nhập mã <strong>GIAM10</strong>
+                </span>
+                <a asp-controller="Product" asp-action="Index" class="top-promo-btn ms-2 text-decoration-none">
+                    Khám phá ngay <i class="bi bi-arrow-right"></i>
+                </a>
             </div>
-            <div class="d-flex align-items-center gap-3">
-                <a href="tel:18006868" class="text-white text-decoration-none"><i class="bi bi-telephone-fill me-1"></i> Hotline: 1800 6868</a>
-                <span>•</span>
-                <a asp-controller="Home" asp-action="Privacy" class="text-white text-decoration-none">Chính sách bảo hành</a>
+            
+            <div class="d-none d-md-flex align-items-center gap-3 small">
+                <a href="tel:18006868" class="text-decoration-none opacity-90 hover-opacity-100">
+                    <i class="bi bi-telephone-fill me-1"></i> Hotline: 1800 6868
+                </a>
+                <span>|</span>
+                <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none opacity-90 hover-opacity-100">
+                    Chính sách
+                </a>
+                <button type="button" class="top-promo-close ms-2" onclick="dismissTopPromo()" title="Đóng thông báo">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Main Navigation Bar -->
-    <header class="main-navbar">
-        <div class="container py-2">
+    <!-- =========================================================
+         B. THANH HEADER CHÍNH (MAIN HEADER BAR)
+         ========================================================= -->
+    <header class="site-header-main py-3">
+        <div class="container">
             <div class="d-flex align-items-center justify-content-between gap-3">
-                <!-- Brand Logo -->
-                <a class="brand-logo" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-cpu-fill text-primary"></i>
+                <!-- 1. Logo -->
+                <a class="brand-logo-red flex-shrink-0" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-bag-heart-fill"></i>
                     <span>TechZone</span>
-                    <span class="brand-badge">Mall</span>
+                    <span class="brand-badge-gold">Mall</span>
                 </a>
 
-                <!-- Search Bar -->
-                <form class="search-container flex-grow-1 d-none d-lg-block" method="get" asp-controller="Product" asp-action="Index">
-                    <input type="text" name="search" class="search-input w-100" placeholder="Tìm kiếm iPhone, MacBook, loa Bluetooth..." value="@Context.Request.Query["search"]" />
-                    <button type="submit" class="search-btn" title="Tìm kiếm">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </form>
+                <!-- 2. Search Container -->
+                <div class="header-search-wrap d-none d-lg-block flex-grow-1 mx-3">
+                    <form class="header-search-form" method="get" asp-controller="Product" asp-action="Index">
+                        <input type="text" name="search" class="header-search-input" placeholder="Tìm kiếm điện thoại, laptop, phụ kiện giá tốt nhất..." value="@Context.Request.Query["search"]" />
+                        <button type="submit" class="header-search-submit" title="Tìm kiếm">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                    <!-- Keyword Suggestion Chips -->
+                    <div class="header-search-tags">
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="iPhone" class="header-search-tag-link">iPhone 15 Pro</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="Galaxy S24" class="header-search-tag-link">Galaxy S24 Ultra</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="MacBook" class="header-search-tag-link">MacBook M3</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="Sony" class="header-search-tag-link">Sony WH-1000XM5</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="Robot" class="header-search-tag-link">Robot Dreame</a>
+                    </div>
+                </div>
 
-                <!-- Action Buttons & Auth -->
-                <div class="d-flex align-items-center gap-2 gap-md-3">
-                    <!-- Search button for mobile -->
-                    <a asp-controller="Product" asp-action="Index" class="btn btn-light rounded-circle d-lg-none" title="Tìm kiếm">
-                        <i class="bi bi-search"></i>
+                <!-- 3. Actions: Account | Wishlist | Cart -->
+                <div class="d-flex align-items-center gap-2 gap-sm-3 flex-shrink-0">
+                    
+                    <!-- Search Trigger for Mobile -->
+                    <a asp-controller="Product" asp-action="Index" class="header-action-btn d-lg-none" title="Tìm kiếm">
+                        <i class="bi bi-search fs-5 text-dark"></i>
                     </a>
 
-                    <!-- User Account Dropdown -->
+                    <!-- Account Section -->
                     @if (SignInManager.IsSignedIn(User))
                     {
                         var currentUser = await UserManager.GetUserAsync(User);
                         <div class="dropdown">
-                            <button class="btn btn-light rounded-pill dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 border" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.8rem; font-weight: 700;">
+                            <button class="header-action-btn bg-transparent border-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-weight: 700; font-size: 0.85rem;">
                                     @(currentUser?.FullName?.Substring(0, 1).ToUpper() ?? "U")
                                 </div>
-                                <span class="d-none d-sm-inline fw-semibold" style="font-size: 0.9rem;">@currentUser?.FullName</span>
+                                <div class="text-start d-none d-sm-block">
+                                    <div class="text-muted" style="font-size: 0.7rem; line-height: 1;">Xin chào,</div>
+                                    <div class="fw-bold text-dark text-truncate" style="max-width: 100px; font-size: 0.85rem;">@currentUser?.FullName</div>
+                                </div>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="min-width: 210px; border-radius: 12px;">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="min-width: 220px; border-radius: 8px;">
                                 <li class="px-3 py-2 border-bottom">
                                     <div class="fw-bold" style="font-size: 0.9rem;">@currentUser?.FullName</div>
                                     <div class="text-muted" style="font-size: 0.75rem;">@currentUser?.Email</div>
@@ -89,7 +122,7 @@
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <li>
-                                        <a class="dropdown-item py-2 text-primary fw-bold" asp-controller="Admin" asp-action="Index">
+                                        <a class="dropdown-item py-2 text-danger fw-bold" asp-controller="Admin" asp-action="Index">
                                             <i class="bi bi-shield-lock-fill me-2"></i> Trang Quản Trị (Admin)
                                         </a>
                                     </li>
@@ -119,62 +152,87 @@
                     }
                     else
                     {
-                        <div class="d-flex align-items-center gap-1">
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-sm px-3 fw-bold rounded-pill">
-                                Đăng nhập
-                            </a>
-                            <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-sm px-3 fw-bold rounded-pill d-none d-sm-inline-block">
-                                Đăng ký
+                        <div class="d-flex align-items-center">
+                            <a asp-controller="Account" asp-action="Login" class="header-action-btn">
+                                <i class="bi bi-person-circle header-action-icon"></i>
+                                <div class="text-start d-none d-sm-block">
+                                    <div class="text-muted" style="font-size: 0.7rem; line-height: 1;">Tài khoản</div>
+                                    <div class="fw-bold text-dark" style="font-size: 0.85rem;">Đăng nhập</div>
+                                </div>
                             </a>
                         </div>
                     }
 
-                    <!-- Cart Button with Dynamic Badge -->
-                    <a asp-controller="Cart" asp-action="Index" class="btn btn-primary rounded-pill d-flex align-items-center gap-2 px-3 py-2 position-relative shadow-sm" title="Giỏ hàng">
-                        <i class="bi bi-cart3 fs-5"></i>
-                        <span class="d-none d-md-inline fw-semibold">Giỏ hàng</span>
-                        <span id="header-cart-badge" class="badge rounded-pill bg-danger d-none" style="font-size: 0.75rem;">0</span>
+                    <!-- Wishlist (Yêu thích) -->
+                    <a href="javascript:void(0)" class="header-action-btn position-relative d-none d-md-flex" onclick="showWishlistModal()" title="Sản phẩm yêu thích">
+                        <i class="bi bi-heart header-action-icon">
+                            <span id="header-wishlist-badge" class="header-badge-count">0</span>
+                        </i>
+                        <span class="d-none d-lg-inline">Yêu thích</span>
                     </a>
-                </div>
-            </div>
-        </div>
 
-        <!-- Quick Categories Strip -->
-        <div class="category-subnav">
-            <div class="container d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <a asp-controller="Product" asp-action="Index" class="category-nav-link active">
-                        <i class="bi bi-grid-fill"></i> Tất cả sản phẩm
+                    <!-- Cart (Giỏ hàng) -->
+                    <a asp-controller="Cart" asp-action="Index" class="btn-header-cart text-decoration-none" title="Xem giỏ hàng">
+                        <div class="position-relative">
+                            <i class="bi bi-cart3 fs-5"></i>
+                            <span id="header-cart-badge" class="header-badge-count d-none">0</span>
+                        </div>
+                        <span class="d-none d-sm-inline">Giỏ hàng</span>
                     </a>
-                    <a asp-controller="Product" asp-action="Index" asp-route-category="dien-thoai-tablet" class="category-nav-link">
-                        <i class="bi bi-phone"></i> Điện thoại & Tablet
-                    </a>
-                    <a asp-controller="Product" asp-action="Index" asp-route-category="laptop-may-tinh" class="category-nav-link">
-                        <i class="bi bi-laptop"></i> Laptop
-                    </a>
-                    <a asp-controller="Product" asp-action="Index" asp-route-category="tai-nghe-am-thanh" class="category-nav-link">
-                        <i class="bi bi-headphones"></i> Tai nghe
-                    </a>
-                    <a asp-controller="Product" asp-action="Index" asp-route-category="dong-ho-thong-minh" class="category-nav-link">
-                        <i class="bi bi-smartwatch"></i> Đồng hồ
-                    </a>
-                    <a asp-controller="Product" asp-action="Index" asp-route-category="phu-kien-cong-nghe" class="category-nav-link">
-                        <i class="bi bi-mouse"></i> Phụ kiện
-                    </a>
-                    <a asp-controller="Product" asp-action="Index" asp-route-category="thiet-bi-smart-home" class="category-nav-link">
-                        <i class="bi bi-house-gear"></i> Smart Home
-                    </a>
-                </div>
-                <div class="d-none d-xl-block">
-                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
-                        <i class="bi bi-fire me-1"></i> Giảm giá đến 40% hôm nay
-                    </span>
+
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Body Container -->
+    <!-- =========================================================
+         C. NAVIGATION MENU STRIP (THANH MENU NGANG)
+         ========================================================= -->
+    <nav class="site-nav-strip">
+        <div class="container d-flex align-items-center justify-content-between overflow-auto">
+            <div class="d-flex align-items-center text-nowrap">
+                <a asp-controller="Home" asp-action="Index" class="nav-strip-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                    <i class="bi bi-house-door-fill text-danger"></i> Trang chủ
+                </a>
+                <a asp-controller="Product" asp-action="Index" class="nav-strip-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Product" && string.IsNullOrEmpty(Context.Request.Query["category"]) ? "active" : "")">
+                    <i class="bi bi-grid-fill"></i> Tất cả sản phẩm
+                </a>
+                
+                <!-- Category Dropdown -->
+                <div class="dropdown d-inline-block">
+                    <a class="nav-strip-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-list-ul"></i> Danh mục
+                    </a>
+                    <ul class="dropdown-menu shadow-sm border-0 py-2" style="border-radius: 8px;">
+                        <li><a class="dropdown-item py-2" asp-controller="Product" asp-action="Index" asp-route-category="dien-thoai-tablet"><i class="bi bi-phone me-2 text-danger"></i> Điện thoại & Tablet</a></li>
+                        <li><a class="dropdown-item py-2" asp-controller="Product" asp-action="Index" asp-route-category="laptop-may-tinh"><i class="bi bi-laptop me-2 text-danger"></i> Laptop & Máy tính</a></li>
+                        <li><a class="dropdown-item py-2" asp-controller="Product" asp-action="Index" asp-route-category="tai-nghe-am-thanh"><i class="bi bi-headphones me-2 text-danger"></i> Tai nghe & Âm thanh</a></li>
+                        <li><a class="dropdown-item py-2" asp-controller="Product" asp-action="Index" asp-route-category="dong-ho-thong-minh"><i class="bi bi-smartwatch me-2 text-danger"></i> Đồng hồ thông minh</a></li>
+                        <li><a class="dropdown-item py-2" asp-controller="Product" asp-action="Index" asp-route-category="phu-kien-cong-nghe"><i class="bi bi-mouse me-2 text-danger"></i> Phụ kiện công nghệ</a></li>
+                        <li><a class="dropdown-item py-2" asp-controller="Product" asp-action="Index" asp-route-category="thiet-bi-smart-home"><i class="bi bi-house-gear me-2 text-danger"></i> Thiết bị Smart Home</a></li>
+                    </ul>
+                </div>
+
+                <a asp-controller="Product" asp-action="Index" asp-route-sortBy="popular" class="nav-strip-link">
+                    <i class="bi bi-fire text-danger"></i> Khuyến mãi <span class="badge-tag-hot">HOT</span>
+                </a>
+                <a asp-controller="Product" asp-action="Index" asp-route-sortBy="newest" class="nav-strip-link">
+                    <i class="bi bi-stars text-warning"></i> Hàng mới về <span class="badge-tag-new">NEW</span>
+                </a>
+                <a asp-controller="Home" asp-action="Privacy" class="nav-strip-link">
+                    <i class="bi bi-shield-check"></i> Chính sách bảo hành
+                </a>
+            </div>
+
+            <div class="d-none d-xl-flex align-items-center gap-2 text-nowrap">
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill small">
+                    <i class="bi bi-truck me-1"></i> Miễn phí giao hàng toàn quốc từ 10Tr
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
     <main role="main" class="flex-grow-1 pb-5">
         @RenderBody()
     </main>
@@ -182,20 +240,41 @@
     <!-- Floating Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
 
+    <!-- Wishlist Modal -->
+    <div class="modal fade" id="wishlistModal" tabindex="-1" aria-labelledby="wishlistModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold" id="wishlistModalLabel">
+                        <i class="bi bi-heart-fill text-danger me-2"></i>Sản Phẩm Yêu Thích
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 text-center" id="wishlistModalBody">
+                    <p class="text-muted mb-0">Danh sách các sản phẩm bạn đã bấm yêu thích được lưu tự động trên thiết bị này.</p>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-sm">Xem thêm sản phẩm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="app-footer pt-5 pb-4">
         <div class="container">
             <div class="row g-4 pb-4 border-bottom border-secondary border-opacity-25">
                 <div class="col-lg-4 col-md-6">
-                    <a class="brand-logo text-white mb-3" asp-controller="Home" asp-action="Index">
-                        <i class="bi bi-cpu-fill text-primary"></i>
-                        <span>TechZone</span>
-                        <span class="brand-badge">Mall</span>
+                    <a class="brand-logo-red text-white mb-3" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-bag-heart-fill text-danger"></i>
+                        <span class="text-white">TechZone</span>
+                        <span class="brand-badge-gold">Mall</span>
                     </a>
-                    <p class="small text-secondary-emphasis">
+                    <p class="small text-secondary">
                         TechZone là nền tảng thương mại điện tử chuyên cung cấp thiết bị công nghệ chính hãng, điện thoại, laptop, phụ kiện thông minh hàng đầu tại Việt Nam với trải nghiệm mua sắm bảo đảm và an tâm.
                     </p>
-                    <div class="d-flex gap-3 text-secondary">
+                    <div class="d-flex gap-3 text-secondary mt-3">
                         <a href="#" class="fs-5 text-secondary hover-primary"><i class="bi bi-facebook"></i></a>
                         <a href="#" class="fs-5 text-secondary hover-primary"><i class="bi bi-youtube"></i></a>
                         <a href="#" class="fs-5 text-secondary hover-primary"><i class="bi bi-tiktok"></i></a>
@@ -207,9 +286,9 @@
                     <h6 class="text-white fw-bold mb-3">Về TechZone</h6>
                     <ul class="list-unstyled small d-flex flex-column gap-2">
                         <li><a href="#">Giới thiệu công ty</a></li>
-                        <li><a href="#">Tuyển dụng</a></li>
                         <li><a href="#">Hệ thống cửa hàng</a></li>
                         <li><a href="#">Tin tức công nghệ</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
                         <li><a href="#">Liên hệ hợp tác</a></li>
                     </ul>
                 </div>
@@ -226,20 +305,20 @@
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <h6 class="text-white fw-bold mb-3">Phương Thức Thanh Toán</h6>
+                    <h6 class="text-white fw-bold mb-3">Thanh Toán & Hỗ Trợ</h6>
                     <div class="d-flex flex-wrap gap-2 mb-3">
-                        <span class="badge bg-light text-dark p-2 border"><i class="bi bi-cash me-1"></i> Tiền mặt COD</span>
-                        <span class="badge bg-light text-dark p-2 border"><i class="bi bi-bank me-1"></i> Chuyển khoản</span>
-                        <span class="badge bg-light text-dark p-2 border"><i class="bi bi-credit-card me-1"></i> Visa/Master</span>
-                        <span class="badge bg-light text-dark p-2 border"><i class="bi bi-qr-code me-1"></i> VNPay / Momo</span>
+                        <span class="badge bg-white text-dark p-2 border"><i class="bi bi-cash me-1 text-success"></i> COD</span>
+                        <span class="badge bg-white text-dark p-2 border"><i class="bi bi-bank me-1 text-primary"></i> Chuyển khoản</span>
+                        <span class="badge bg-white text-dark p-2 border"><i class="bi bi-credit-card me-1 text-warning"></i> Visa/Master</span>
+                        <span class="badge bg-white text-dark p-2 border"><i class="bi bi-qr-code me-1 text-danger"></i> QR Code</span>
                     </div>
-                    <h6 class="text-white fw-bold mb-2">Tổng Đài Hỗ Trợ</h6>
-                    <p class="small mb-1 text-secondary-emphasis">Mua hàng: <strong class="text-white">1800 6868</strong> (8:00 - 21:30)</p>
-                    <p class="small mb-0 text-secondary-emphasis">Bảo hành: <strong class="text-white">1800 6869</strong> (8:00 - 21:00)</p>
+                    <h6 class="text-white fw-bold mb-2">Tổng Đài Miễn Cước</h6>
+                    <p class="small mb-1 text-secondary">Tư vấn mua hàng: <strong class="text-white">1800 6868</strong> (8h00 - 21h30)</p>
+                    <p class="small mb-0 text-secondary">Hỗ trợ kỹ thuật: <strong class="text-white">1800 6869</strong> (8h00 - 21h00)</p>
                 </div>
             </div>
 
-            <div class="pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center small text-secondary-emphasis">
+            <div class="pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center small text-secondary">
                 <p class="mb-2 mb-md-0">© 2026 TechZone E-Commerce. Thiết kế & Lập trình Full-stack trên ASP.NET Core & SQL Server.</p>
                 <p class="mb-0">Đồ án Thương Mại Điện Tử Chuyên Nghiệp</p>
             </div>

@@ -1,217 +1,392 @@
 @model MyWebShop.Models.ViewModels.HomeViewModel
 @{
-    ViewData["Title"] = "Trang Chủ - TechZone Mall Công Nghệ Chính Hãng";
+    ViewData["Title"] = "TechZone Mall - Siêu Thị Công Nghệ Hàng Đầu";
+    var catPhone = Model.Categories.FirstOrDefault(c => c.Slug == "dien-thoai-tablet");
+    var catLaptop = Model.Categories.FirstOrDefault(c => c.Slug == "laptop-may-tinh");
+    var catAudio = Model.Categories.FirstOrDefault(c => c.Slug == "tai-nghe-am-thanh");
 }
 
-<!-- Hero Banner Section -->
-<div class="container mt-4 mb-5">
-    <div class="row g-4 align-items-stretch">
-        <div class="col-lg-8">
-            <div class="hero-slider-card p-4 p-md-5 h-100 d-flex flex-column justify-content-center">
-                <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill align-self-start mb-3">
-                    <i class="bi bi-stars me-1"></i> Siêu Phẩm Công Nghệ Mới Nhất 2026
+<div class="container">
+    <!-- =========================================================
+         1. HERO BANNER AREA (3 COLUMNS)
+         ========================================================= -->
+    <div class="hero-3col-wrapper">
+        <div class="row g-3">
+            <!-- Left Column: Category Sidebar (20%) -->
+            <div class="col-xl-3 col-lg-3 d-none d-lg-block">
+                <div class="hero-category-sidebar">
+                    <div class="hero-sidebar-header">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Danh Mục Sản Phẩm</span>
+                    </div>
+                    <div class="d-flex flex-column">
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <a asp-controller="Product" asp-action="Index" asp-route-category="@cat.Slug" class="hero-category-item">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi @cat.IconClass cat-icon"></i>
+                                    <span>@cat.Name</span>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column: Main Banner Slider (55%) -->
+            <div class="col-xl-6 col-lg-6 col-md-8 col-12">
+                <div id="heroMainCarousel" class="carousel slide hero-main-carousel" data-bs-ride="carousel" data-bs-interval="4500">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+                        <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="2"></button>
+                    </div>
+
+                    <div class="carousel-inner h-100">
+                        <!-- Slide 1: Phones & Flagships -->
+                        <div class="carousel-item active h-100">
+                            <div class="carousel-slide-content carousel-slide-1 h-100">
+                                <span class="slide-badge">
+                                    <i class="bi bi-fire me-1"></i> SIÊU SALE CÔNG NGHỆ 2026
+                                </span>
+                                <h2 class="slide-title">iPhone 15 Pro Max & Galaxy S24 Ultra</h2>
+                                <p class="slide-desc">
+                                    Chip tiến trình 3nm, khung titan siêu bền bỉ, camera zoom quang học 5x. Giảm trực tiếp đến 5.000.000đ hôm nay!
+                                </p>
+                                <a asp-controller="Product" asp-action="Index" asp-route-category="dien-thoai-tablet" class="slide-btn">
+                                    <i class="bi bi-bag-check-fill"></i> Mua ngay giá sốc
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2: Laptops & Computers -->
+                        <div class="carousel-item h-100">
+                            <div class="carousel-slide-content carousel-slide-2 h-100">
+                                <span class="slide-badge">
+                                    <i class="bi bi-laptop me-1"></i> HIỆU NĂNG ĐỈNH CAO
+                                </span>
+                                <h2 class="slide-title">MacBook M3 Pro & ROG Zephyrus OLED</h2>
+                                <p class="slide-desc">
+                                    Đỉnh cao đồ họa, lập trình và gaming. Màn hình chuẩn màu điện ảnh, thời lượng pin 22 giờ liên tục.
+                                </p>
+                                <a asp-controller="Product" asp-action="Index" asp-route-category="laptop-may-tinh" class="slide-btn">
+                                    <i class="bi bi-arrow-right-circle-fill"></i> Khám phá laptop
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Audio & Headphones -->
+                        <div class="carousel-item h-100">
+                            <div class="carousel-slide-content carousel-slide-3 h-100">
+                                <span class="slide-badge">
+                                    <i class="bi bi-headphones me-1"></i> ÂM THANH HI-RES
+                                </span>
+                                <h2 class="slide-title">Sony WH-1000XM5 & Marshall Stanmore</h2>
+                                <p class="slide-desc">
+                                    Công nghệ chống ồn chủ động hàng đầu thế giới, âm trường rộng mở sống động cho mọi không gian sống.
+                                </p>
+                                <a asp-controller="Product" asp-action="Index" asp-route-category="tai-nghe-am-thanh" class="slide-btn">
+                                    <i class="bi bi-cart3"></i> Xem ưu đãi ngay
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#heroMainCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#heroMainCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: 2 Sub Banners (25%) -->
+            <div class="col-xl-3 col-lg-3 col-md-4 col-12 d-flex flex-column gap-3">
+                <a asp-controller="Product" asp-action="Index" class="hero-sub-banner sub-banner-1">
+                    <span class="sub-banner-tag">Ưu Đãi Độc Quyền</span>
+                    <h5 class="sub-banner-title">Thu Cũ Đổi Mới</h5>
+                    <p class="sub-banner-desc">Trợ giá lên đến 2.000.000đ khi lên đời máy mới</p>
+                    <span class="sub-banner-link">Khám phá ngay <i class="bi bi-arrow-right"></i></span>
+                </a>
+
+                <a asp-controller="Product" asp-action="Index" class="hero-sub-banner sub-banner-2">
+                    <span class="sub-banner-tag">Khách Hàng Mới</span>
+                    <h5 class="sub-banner-title">Voucher 50.000đ</h5>
+                    <p class="sub-banner-desc">Nhập mã <strong>WELCOME50K</strong> khi thanh toán đơn hàng</p>
+                    <span class="sub-banner-link">Lấy mã giảm giá <i class="bi bi-arrow-right"></i></span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         2. VALUE PROPS BAR (CAM KẾT DỊCH VỤ)
+         ========================================================= -->
+    <div class="value-props-bar">
+        <div class="row g-3">
+            <div class="col-6 col-lg-3 border-end border-light-subtle">
+                <div class="prop-item">
+                    <div class="prop-icon">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                    <div>
+                        <div class="prop-title">100% Chính Hãng</div>
+                        <p class="prop-desc">Bảo hành 12 - 24 tháng chính hãng</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3 border-end border-light-subtle">
+                <div class="prop-item">
+                    <div class="prop-icon" style="background-color: #ecfdf5; color: #10b981;">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <div>
+                        <div class="prop-title">Giao Hàng Toàn Quốc</div>
+                        <p class="prop-desc">Miễn phí cho đơn từ 10.000.000đ</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3 border-end border-light-subtle">
+                <div class="prop-item">
+                    <div class="prop-icon" style="background-color: #fff8eb; color: #f59e0b;">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                    <div>
+                        <div class="prop-title">Đổi Trả 30 Ngày</div>
+                        <p class="prop-desc">Lỗi nhà sản xuất 1 đổi 1 ngay</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="prop-item">
+                    <div class="prop-icon" style="background-color: #eff6ff; color: #3b82f6;">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <div>
+                        <div class="prop-title">Hỗ Trợ 24/7</div>
+                        <p class="prop-desc">Tổng đài miễn phí: 1800 6868</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         3. SẢN PHẨM NỔI BẬT (FEATURED PRODUCTS GRID - 4 COLUMNS)
+         ========================================================= -->
+    <div class="section-box">
+        <div class="section-head-bar">
+            <div class="section-title-wrap">
+                <div class="section-title-bar"></div>
+                <h3 class="section-title-text">SẢN PHẨM NỔI BẬT</h3>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-2 px-2 py-1 small">HOT DEAL</span>
+            </div>
+            <a asp-controller="Product" asp-action="Index" class="section-view-all">
+                Xem tất cả (@Model.FeaturedProducts.Count) <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+            @foreach (var prod in Model.FeaturedProducts)
+            {
+                <div class="col">
+                    @await Html.PartialAsync("_ProductCard", prod)
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- =========================================================
+         4. SẢN PHẨM BÁN CHẠY (BEST SELLERS HORIZONTAL CAROUSEL)
+         ========================================================= -->
+    @if (Model.BestSellerProducts.Any())
+    {
+        <div class="section-box">
+            <div class="section-head-bar">
+                <div class="section-title-wrap">
+                    <div class="section-title-bar" style="background-color: var(--secondary);"></div>
+                    <h3 class="section-title-text">SẢN PHẨM BÁN CHẠY</h3>
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning ms-2 px-2 py-1 small">
+                        <i class="bi bi-trophy-fill text-warning me-1"></i>TOP BÁN CHẠY
+                    </span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-light border rounded-circle" onclick="scrollBestSellers(-300)" title="Trước">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-light border rounded-circle" onclick="scrollBestSellers(300)" title="Sau">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <a asp-controller="Product" asp-action="Index" asp-route-sortBy="popular" class="section-view-all ms-2">
+                        Xem tất cả <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Horizontal Scroll Container -->
+            <div id="bestSellersContainer" class="bestsellers-scroll-wrap">
+                @{
+                    int rank = 1;
+                }
+                @foreach (var prod in Model.BestSellerProducts)
+                {
+                    <div class="bestseller-col-item position-relative">
+                        <div class="bestseller-rank-badge">#@rank</div>
+                        @await Html.PartialAsync("_ProductCard", prod)
+                    </div>
+                    rank++;
+                }
+            </div>
+        </div>
+    }
+
+    <!-- =========================================================
+         5. BANNER CHƯƠNG TRÌNH KHUYẾN MÃI (MID-PAGE WIDE BANNER)
+         ========================================================= -->
+    <div class="mid-promo-banner">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-white text-danger fw-bold rounded-pill px-3 py-1 mb-2 small">
+                    <i class="bi bi-tag-fill me-1"></i> ƯU ĐÃI ĐẶC BIỆT
                 </span>
-                <h1 class="display-5 fw-bold mb-3">iPhone 15 Pro Max & Galaxy S24 Ultra</h1>
-                <p class="fs-6 opacity-90 mb-4" style="max-width: 520px;">
-                    Trải nghiệm hiệu năng vượt trội với chip tiến trình 3nm, camera nhiếp ảnh zoom viễn vọng đỉnh cao và trợ lý thông minh nhân tạo thế hệ mới.
+                <h2 class="mid-promo-title">NGÀY HỘI MUA SẮM CÔNG NGHỆ TECHZONE</h2>
+                <p class="mid-promo-subtitle">
+                    Nhập mã voucher <strong>GIAM10</strong> để giảm thêm 10% cho toàn bộ đơn hàng. Áp dụng đồng thời cùng chương trình miễn phí giao hàng toàn quốc!
                 </p>
-                <div class="d-flex flex-wrap gap-3">
-                    <a asp-controller="Product" asp-action="Index" class="btn btn-light text-primary px-4 py-2 fw-bold rounded-pill shadow">
-                        <i class="bi bi-cart3 me-1"></i> Mua ngay giá sốc
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-controller="Product" asp-action="Index" class="mid-promo-btn text-decoration-none">
+                        <i class="bi bi-lightning-charge-fill"></i> Xem ưu đãi ngay
                     </a>
-                    <a asp-controller="Product" asp-action="Index" asp-route-category="dien-thoai-tablet" class="btn btn-outline-light px-4 py-2 fw-semibold rounded-pill">
-                        Khám phá điện thoại
+                    <a asp-controller="Product" asp-action="Index" asp-route-sortBy="newest" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold">
+                        Sản phẩm mới nhất
                     </a>
                 </div>
             </div>
-        </div>
-
-        <div class="col-lg-4 d-flex flex-column gap-3">
-            <div class="card border-0 rounded-4 p-4 text-white flex-grow-1 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, #0f172a, #334155);">
-                <span class="badge bg-danger rounded-pill px-2 py-1 align-self-start mb-2">HOT DEAL</span>
-                <h5 class="fw-bold mb-1">MacBook Pro M3 Max</h5>
-                <p class="small text-white-50 mb-3">Đỉnh cao đồ họa & lập trình cho chuyên gia</p>
-                <a asp-controller="Product" asp-action="Index" asp-route-category="laptop-may-tinh" class="btn btn-sm btn-outline-light align-self-start rounded-pill">
-                    Xem chi tiết <i class="bi bi-arrow-right ms-1"></i>
-                </a>
-            </div>
-            <div class="card border-0 rounded-4 p-4 text-dark flex-grow-1 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, #fed7aa, #fdba74);">
-                <span class="badge bg-dark rounded-pill px-2 py-1 align-self-start mb-2">ƯU ĐÃI THÁNG</span>
-                <h5 class="fw-bold mb-1">Sony & Marshall Sound</h5>
-                <p class="small text-secondary mb-3">Âm thanh Hi-Res, chống ồn chủ động đỉnh cao</p>
-                <a asp-controller="Product" asp-action="Index" asp-route-category="tai-nghe-am-thanh" class="btn btn-sm btn-dark align-self-start rounded-pill">
-                    Xem sản phẩm <i class="bi bi-arrow-right ms-1"></i>
-                </a>
+            <div class="col-lg-4 d-none d-lg-flex justify-content-end">
+                <i class="bi bi-gift-fill text-white opacity-25" style="font-size: 10rem; line-height: 1;"></i>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Features Value Props -->
-<div class="container mb-5">
-    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
-        <div class="row g-3 text-center">
-            <div class="col-6 col-md-3 border-end border-light-subtle">
-                <div class="d-flex align-items-center justify-content-center gap-3 py-2">
-                    <i class="bi bi-patch-check-fill fs-2 text-primary"></i>
-                    <div class="text-start">
-                        <div class="fw-bold small">100% Chính Hãng</div>
-                        <div class="text-muted" style="font-size: 0.75rem;">Bảo hành 12-24 tháng</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 border-end border-light-subtle">
-                <div class="d-flex align-items-center justify-content-center gap-3 py-2">
-                    <i class="bi bi-truck fs-2 text-success"></i>
-                    <div class="text-start">
-                        <div class="fw-bold small">Giao Hàng Siêu Tốc</div>
-                        <div class="text-muted" style="font-size: 0.75rem;">Freeship từ 10.000.000đ</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 border-end border-light-subtle">
-                <div class="d-flex align-items-center justify-content-center gap-3 py-2">
-                    <i class="bi bi-arrow-repeat fs-2 text-warning"></i>
-                    <div class="text-start">
-                        <div class="fw-bold small">Đổi Trả 30 Ngày</div>
-                        <div class="text-muted" style="font-size: 0.75rem;">Lỗi là đổi mới 1-1</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="d-flex align-items-center justify-content-center gap-3 py-2">
-                    <i class="bi bi-headset fs-2 text-danger"></i>
-                    <div class="text-start">
-                        <div class="fw-bold small">Hỗ Trợ 24/7</div>
-                        <div class="text-muted" style="font-size: 0.75rem;">Hotline: 1800 6868</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- =========================================================
+         6. KHU VỰC SẢN PHẨM THEO DANH MỤC (CATEGORY SHOWCASES)
+         ========================================================= -->
 
-<!-- Categories Grid -->
-<div class="container mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0">
-            <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>Danh Mục Nổi Bật
-        </h4>
-        <a asp-controller="Product" asp-action="Index" class="small fw-bold text-primary text-decoration-none">
-            Xem tất cả <i class="bi bi-chevron-right"></i>
-        </a>
-    </div>
-
-    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-3">
-        @foreach (var cat in Model.Categories)
-        {
-            <div class="col">
-                <a asp-controller="Product" asp-action="Index" asp-route-category="@cat.Slug" class="category-card h-100">
-                    <div class="category-icon-wrapper">
-                        <i class="bi @cat.IconClass"></i>
-                    </div>
-                    <span class="fw-bold small">@cat.Name</span>
-                    <span class="text-muted" style="font-size: 0.75rem;">@cat.Products.Count sản phẩm</span>
-                </a>
-            </div>
-        }
-    </div>
-</div>
-
-<!-- Flash Sale / Giảm giá sốc -->
-@if (Model.DiscountProducts.Any())
-{
-    <div class="container mb-5">
-        <div class="card border-0 rounded-4 p-4 shadow-sm" style="background: linear-gradient(135deg, #fff1f2, #ffe4e6);">
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <!-- Category 1: Điện thoại & Tablet -->
+    @if (catPhone != null && catPhone.Products.Any())
+    {
+        <div class="section-box">
+            <div class="section-head-bar">
+                <div class="section-title-wrap">
+                    <div class="section-title-bar"></div>
+                    <h3 class="section-title-text">@catPhone.Name.ToUpper()</h3>
+                </div>
                 <div class="d-flex align-items-center gap-3">
-                    <h4 class="fw-bold text-danger mb-0">
-                        <i class="bi bi-lightning-charge-fill me-1"></i> GIẢM GIÁ SỐC HÔM NAY
-                    </h4>
-                    <span class="badge bg-danger text-white px-2 py-1">Flash Deals</span>
+                    <div class="category-nav-chips d-none d-md-flex">
+                        <a asp-controller="Product" asp-action="Index" asp-route-category="@catPhone.Slug" class="category-chip-btn active">Tất cả</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="iPhone" class="category-chip-btn">iPhone</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="Samsung" class="category-chip-btn">Samsung</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="iPad" class="category-chip-btn">iPad Pro</a>
+                    </div>
+                    <a asp-controller="Product" asp-action="Index" asp-route-category="@catPhone.Slug" class="section-view-all">
+                        Xem tất cả (@catPhone.Products.Count) <i class="bi bi-chevron-right"></i>
+                    </a>
                 </div>
-                <a asp-controller="Product" asp-action="Index" class="btn btn-outline-danger btn-sm rounded-pill px-3">
-                    Xem tất cả deal <i class="bi bi-arrow-right ms-1"></i>
-                </a>
             </div>
 
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-                @foreach (var product in Model.DiscountProducts)
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                @foreach (var prod in catPhone.Products.Take(4))
                 {
                     <div class="col">
-                        @await Html.PartialAsync("_ProductCard", product)
+                        @await Html.PartialAsync("_ProductCard", prod)
                     </div>
                 }
             </div>
         </div>
-    </div>
-}
+    }
 
-<!-- Sản phẩm Nổi bật -->
-<div class="container mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0">
-            <i class="bi bi-fire text-danger me-2"></i>Sản Phẩm Nổi Bật
-        </h4>
-        <a asp-controller="Product" asp-action="Index" class="small fw-bold text-primary text-decoration-none">
-            Xem tất cả <i class="bi bi-chevron-right"></i>
-        </a>
-    </div>
-
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-        @foreach (var product in Model.FeaturedProducts)
-        {
-            <div class="col">
-                @await Html.PartialAsync("_ProductCard", product)
+    <!-- Category 2: Laptop & Máy tính -->
+    @if (catLaptop != null && catLaptop.Products.Any())
+    {
+        <div class="section-box">
+            <div class="section-head-bar">
+                <div class="section-title-wrap">
+                    <div class="section-title-bar"></div>
+                    <h3 class="section-title-text">@catLaptop.Name.ToUpper()</h3>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="category-nav-chips d-none d-md-flex">
+                        <a asp-controller="Product" asp-action="Index" asp-route-category="@catLaptop.Slug" class="category-chip-btn active">Tất cả</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="MacBook" class="category-chip-btn">MacBook</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="ASUS" class="category-chip-btn">ASUS Gaming</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="Dell" class="category-chip-btn">Dell XPS</a>
+                    </div>
+                    <a asp-controller="Product" asp-action="Index" asp-route-category="@catLaptop.Slug" class="section-view-all">
+                        Xem tất cả (@catLaptop.Products.Count) <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
             </div>
-        }
-    </div>
+
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                @foreach (var prod in catLaptop.Products.Take(4))
+                {
+                    <div class="col">
+                        @await Html.PartialAsync("_ProductCard", prod)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Category 3: Tai nghe & Âm thanh -->
+    @if (catAudio != null && catAudio.Products.Any())
+    {
+        <div class="section-box">
+            <div class="section-head-bar">
+                <div class="section-title-wrap">
+                    <div class="section-title-bar"></div>
+                    <h3 class="section-title-text">@catAudio.Name.ToUpper()</h3>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="category-nav-chips d-none d-md-flex">
+                        <a asp-controller="Product" asp-action="Index" asp-route-category="@catAudio.Slug" class="category-chip-btn active">Tất cả</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="Sony" class="category-chip-btn">Sony</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="AirPods" class="category-chip-btn">AirPods</a>
+                        <a asp-controller="Product" asp-action="Index" asp-route-search="Marshall" class="category-chip-btn">Marshall</a>
+                    </div>
+                    <a asp-controller="Product" asp-action="Index" asp-route-category="@catAudio.Slug" class="section-view-all">
+                        Xem tất cả (@catAudio.Products.Count) <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                @foreach (var prod in catAudio.Products.Take(4))
+                {
+                    <div class="col">
+                        @await Html.PartialAsync("_ProductCard", prod)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
 </div>
 
-<!-- Sản phẩm Bán chạy -->
-@if (Model.BestSellerProducts.Any())
-{
-    <div class="container mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="fw-bold mb-0">
-                <i class="bi bi-trophy-fill text-warning me-2"></i>Bán Chạy Nhất
-            </h4>
-            <a asp-controller="Product" asp-action="Index" class="small fw-bold text-primary text-decoration-none">
-                Xem tất cả <i class="bi bi-chevron-right"></i>
-            </a>
-        </div>
-
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-            @foreach (var product in Model.BestSellerProducts)
-            {
-                <div class="col">
-                    @await Html.PartialAsync("_ProductCard", product)
-                </div>
+@section Scripts {
+    <script>
+        function scrollBestSellers(offset) {
+            const container = document.getElementById('bestSellersContainer');
+            if (container) {
+                container.scrollBy({ left: offset, behavior: 'smooth' });
             }
-        </div>
-    </div>
-}
-
-<!-- Sản phẩm Mới cập nhật -->
-@if (Model.NewArrivalProducts.Any())
-{
-    <div class="container mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="fw-bold mb-0">
-                <i class="bi bi-sparkles text-info me-2"></i>Hàng Mới Về
-            </h4>
-            <a asp-controller="Product" asp-action="Index" class="small fw-bold text-primary text-decoration-none">
-                Xem tất cả <i class="bi bi-chevron-right"></i>
-            </a>
-        </div>
-
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-            @foreach (var product in Model.NewArrivalProducts)
-            {
-                <div class="col">
-                    @await Html.PartialAsync("_ProductCard", product)
-                </div>
-            }
-        </div>
-    </div>
+        }
+    </script>
 }

@@ -1,9 +1,18 @@
-// E-Commerce Interactive Script
+// TechZone Modern E-Commerce Client Script
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialize Cart Badge
+    // 1. Initialize Cart Badge
     updateCartBadge();
 
-    // Check for TempData flash messages from server and render as toasts
+    // 2. Initialize Wishlist Badge
+    updateWishlistBadge();
+
+    // 3. Check Top Promo Banner Dismiss State
+    if (sessionStorage.getItem('techzone_top_promo_dismissed') === 'true') {
+        const promo = document.getElementById('topPromoBanner');
+        if (promo) promo.style.display = 'none';
+    }
+
+    // 4. Check for TempData flash messages from server and render as toasts
     const successMsg = document.getElementById('server-success-msg')?.value;
     const errorMsg = document.getElementById('server-error-msg')?.value;
 
@@ -14,6 +23,20 @@ document.addEventListener('DOMContentLoaded', function () {
         showToast(errorMsg, 'error');
     }
 });
+
+// Dismiss Top Promo Banner
+function dismissTopPromo() {
+    const promo = document.getElementById('topPromoBanner');
+    if (promo) {
+        promo.style.transition = 'all 0.25s ease';
+        promo.style.opacity = '0';
+        promo.style.height = '0';
+        promo.style.padding = '0';
+        promo.style.overflow = 'hidden';
+        setTimeout(() => promo.remove(), 260);
+        sessionStorage.setItem('techzone_top_promo_dismissed', 'true');
+    }
+}
 
 // Toast notification helper
 function showToast(message, type = 'info') {
@@ -28,13 +51,13 @@ function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `app-toast toast-${type}`;
 
-    let iconClass = 'bi-info-circle-fill text-primary';
+    let iconClass = 'bi-info-circle-fill text-warning';
     if (type === 'success') iconClass = 'bi-check-circle-fill text-success';
     if (type === 'error') iconClass = 'bi-exclamation-triangle-fill text-danger';
 
     toast.innerHTML = `
         <i class="bi ${iconClass} fs-5"></i>
-        <div class="flex-grow-1" style="font-size: 0.9rem; font-weight: 500;">${message}</div>
+        <div class="flex-grow-1" style="font-size: 0.875rem; font-weight: 500;">${message}</div>
         <button type="button" class="btn-close btn-close-sm" style="font-size: 0.75rem;" onclick="this.parentElement.remove()"></button>
     `;
 
@@ -65,6 +88,69 @@ async function updateCartBadge() {
         }
     } catch (e) {
         console.error('Error fetching cart count:', e);
+    }
+}
+
+// Wishlist Storage Management
+function getWishlist() {
+    try {
+        return JSON.parse(localStorage.getItem('techzone_wishlist') || '[]');
+    } catch {
+        return [];
+    }
+}
+
+function updateWishlistBadge() {
+    const list = getWishlist();
+    const badge = document.getElementById('header-wishlist-badge');
+    if (badge) {
+        badge.innerText = list.length;
+    }
+}
+
+function toggleWishlist(productId, btn = null) {
+    let list = getWishlist();
+    const index = list.indexOf(productId);
+    if (index > -1) {
+        list.splice(index, 1);
+        showToast('Đã xóa sản phẩm khỏi danh sách yêu thích', 'info');
+        if (btn) btn.innerHTML = '<i class="bi bi-heart"></i>';
+    } else {
+        list.push(productId);
+        showToast('Đã lưu sản phẩm vào danh sách yêu thích!', 'success');
+        if (btn) btn.innerHTML = '<i class="bi bi-heart-fill text-danger"></i>';
+    }
+    localStorage.setItem('techzone_wishlist', JSON.stringify(list));
+    updateWishlistBadge();
+}
+
+function showWishlistModal() {
+    const list = getWishlist();
+    const modalBody = document.getElementById('wishlistModalBody');
+    if (modalBody) {
+        if (list.length === 0) {
+            modalBody.innerHTML = `
+                <div class="py-4">
+                    <i class="bi bi-heart text-muted" style="font-size: 3rem;"></i>
+                    <h6 class="fw-bold mt-3 mb-1">Chưa có sản phẩm yêu thích</h6>
+                    <p class="text-muted small">Hãy nhấn biểu tượng trái tim ở các sản phẩm để lưu lại xem sau.</p>
+                </div>
+            `;
+        } else {
+            modalBody.innerHTML = `
+                <div class="text-start">
+                    <div class="alert alert-success py-2 small mb-3">
+                        <i class="bi bi-check-circle-fill me-1"></i> Bạn đang lưu <strong>${list.length}</strong> sản phẩm trong danh sách yêu thích.
+                    </div>
+                    <p class="text-muted small">Nhấn vào "Xem thêm sản phẩm" để khám phá thêm nhiều ưu đãi công nghệ hấp dẫn!</p>
+                </div>
+            `;
+        }
+    }
+    const modalElem = document.getElementById('wishlistModal');
+    if (modalElem && window.bootstrap) {
+        const modal = new bootstrap.Modal(modalElem);
+        modal.show();
     }
 }
 
@@ -194,7 +280,6 @@ async function removeCartItem(cartItemId, rowElementId) {
                 badge.innerText = data.cartCount;
                 if (data.cartCount === 0) {
                     badge.classList.add('d-none');
-                    // Reload to show empty state
                     location.reload();
                 }
             }
@@ -220,11 +305,10 @@ function changeMainImage(url, thumbnailElement) {
         }, 150);
     }
 
-    // Toggle active border on thumbnails
     const thumbs = document.querySelectorAll('.product-thumb-item');
-    thumbs.forEach(t => t.classList.remove('border-primary', 'shadow-sm'));
+    thumbs.forEach(t => t.classList.remove('border-danger', 'shadow-sm'));
     if (thumbnailElement) {
-        thumbnailElement.classList.add('border-primary', 'shadow-sm');
+        thumbnailElement.classList.add('border-danger', 'shadow-sm');
     }
 }
 

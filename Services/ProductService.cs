@@ -18,6 +18,7 @@ namespace MyWebShop.Services
         public async Task<HomeViewModel> GetHomeDataAsync()
         {
             var categories = await _context.Categories
+                .Include(c => c.Products.Where(p => p.IsActive))
                 .Where(c => c.IsActive)
                 .OrderBy(c => c.DisplayOrder)
                 .ToListAsync();
