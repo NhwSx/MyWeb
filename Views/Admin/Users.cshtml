@@ -1,0 +1,107 @@
+@model List<MyWebShop.Models.ViewModels.UserListViewModel>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý người dùng";
+}
+
+<div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Danh sách tài khoản người dùng (@Model.Count)</h4>
+            <p class="text-muted small mb-0">Quản lý phân quyền và kiểm soát bảo mật tài khoản khách hàng</p>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" class="form-control" placeholder="Tìm theo email hoặc họ tên khách hàng..." value="@ViewBag.Search" />
+                <button type="submit" class="btn btn-primary px-3">Tìm kiếm</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table align-middle table-hover small">
+            <thead class="bg-light">
+                <tr>
+                    <th>Họ và tên</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Vai trò</th>
+                    <th>Ngày đăng ký</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-bold" style="width: 34px; height: 34px;">
+                                    @(user.FullName.Length > 0 ? user.FullName.Substring(0, 1).ToUpper() : "U")
+                                </div>
+                                <strong class="text-dark">@user.FullName</strong>
+                            </div>
+                        </td>
+                        <td>@user.Email</td>
+                        <td>@(user.PhoneNumber ?? "Chưa cập nhật")</td>
+                        <td>
+                            @foreach (var role in user.Roles)
+                            {
+                                <span class="badge @(role == "Admin" ? "bg-danger" : "bg-primary") me-1">
+                                    @role
+                                </span>
+                            }
+                        </td>
+                        <td>@user.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (user.IsLockedOut)
+                            {
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                    <i class="bi bi-lock-fill me-1"></i>Đang bị khóa
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Bình thường
+                                </span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @if (!user.Roles.Contains("Admin"))
+                            {
+                                <form asp-action="ToggleLockUser" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái khóa tài khoản này?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    @if (user.IsLockedOut)
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-unlock-fill me-1"></i> Mở khóa
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-lock-fill me-1"></i> Khóa tài khoản
+                                        </button>
+                                    }
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-muted">Admin cấp cao</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

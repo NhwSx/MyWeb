@@ -1,0 +1,104 @@
+@model List<MyWebShop.Models.Entities.Order>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý đơn hàng";
+    var currentStatus = ViewBag.CurrentStatus as MyWebShop.Models.Entities.OrderStatus?;
+}
+
+<div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Quản lý đơn hàng (@Model.Count)</h4>
+            <p class="text-muted small mb-0">Theo dõi, xác nhận và cập nhật trạng thái vận chuyển đơn hàng</p>
+        </div>
+    </div>
+
+    <!-- Status Filter Buttons -->
+    <div class="d-flex flex-wrap gap-2 mb-4 pb-2 border-bottom">
+        <a asp-action="Orders" class="btn btn-sm @(!currentStatus.HasValue ? "btn-primary" : "btn-light border") rounded-pill px-3">
+            Tất cả
+        </a>
+        <a asp-action="Orders" asp-route-status="@MyWebShop.Models.Entities.OrderStatus.Pending" class="btn btn-sm @(currentStatus == MyWebShop.Models.Entities.OrderStatus.Pending ? "btn-warning text-dark" : "btn-light border") rounded-pill px-3">
+            Chờ xác nhận
+        </a>
+        <a asp-action="Orders" asp-route-status="@MyWebShop.Models.Entities.OrderStatus.Confirmed" class="btn btn-sm @(currentStatus == MyWebShop.Models.Entities.OrderStatus.Confirmed ? "btn-info text-dark" : "btn-light border") rounded-pill px-3">
+            Đã xác nhận
+        </a>
+        <a asp-action="Orders" asp-route-status="@MyWebShop.Models.Entities.OrderStatus.Preparing" class="btn btn-sm @(currentStatus == MyWebShop.Models.Entities.OrderStatus.Preparing ? "btn-primary" : "btn-light border") rounded-pill px-3">
+            Đang chuẩn bị
+        </a>
+        <a asp-action="Orders" asp-route-status="@MyWebShop.Models.Entities.OrderStatus.Shipping" class="btn btn-sm @(currentStatus == MyWebShop.Models.Entities.OrderStatus.Shipping ? "btn-secondary" : "btn-light border") rounded-pill px-3">
+            Đang giao
+        </a>
+        <a asp-action="Orders" asp-route-status="@MyWebShop.Models.Entities.OrderStatus.Delivered" class="btn btn-sm @(currentStatus == MyWebShop.Models.Entities.OrderStatus.Delivered ? "btn-success" : "btn-light border") rounded-pill px-3">
+            Đã giao
+        </a>
+        <a asp-action="Orders" asp-route-status="@MyWebShop.Models.Entities.OrderStatus.Cancelled" class="btn btn-sm @(currentStatus == MyWebShop.Models.Entities.OrderStatus.Cancelled ? "btn-danger" : "btn-light border") rounded-pill px-3">
+            Đã hủy
+        </a>
+    </div>
+
+    <!-- Search Form -->
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" class="form-control" placeholder="Tìm theo mã đơn, họ tên hoặc SĐT khách hàng..." value="@ViewBag.Search" />
+                <button type="submit" class="btn btn-primary px-3">Tìm kiếm</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table align-middle table-hover small">
+            <thead class="bg-light">
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Thời gian</th>
+                    <th>Khách hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Thanh toán</th>
+                    <th>Trạng thái đơn</th>
+                    <th class="text-end">Chi tiết</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong class="text-primary">@o.OrderCode</strong>
+                            <div class="text-muted" style="font-size: 0.75rem;">@o.Items.Count sản phẩm</div>
+                        </td>
+                        <td>
+                            <div>@o.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">@o.CreatedAt.ToLocalTime().ToString("HH:mm")</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold">@o.CustomerName</div>
+                            <div class="text-muted"><i class="bi bi-telephone me-1"></i>@o.CustomerPhone</div>
+                        </td>
+                        <td>
+                            <strong class="text-danger">@o.TotalAmount.ToString("#,##0")₫</strong>
+                        </td>
+                        <td>
+                            <span class="badge @(o.PaymentStatus == MyWebShop.Models.Entities.PaymentStatus.Paid ? "bg-success" : "bg-warning text-dark")">
+                                @o.PaymentStatusDisplayName
+                            </span>
+                            <div class="text-muted" style="font-size: 0.7rem;">@o.PaymentMethod</div>
+                        </td>
+                        <td>
+                            <span class="badge @o.StatusBadgeClass">@o.StatusDisplayName</span>
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="OrderDetail" asp-route-id="@o.Id" class="btn btn-sm btn-outline-primary px-3">
+                                Xem & Xử lý
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

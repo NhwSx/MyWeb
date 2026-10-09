@@ -1,0 +1,328 @@
+@model MyWebShop.Models.ViewModels.ProductDetailViewModel
+@{
+    ViewData["Title"] = Model.Product.Name;
+    var prod = Model.Product;
+}
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index" class="text-decoration-none">Sản phẩm</a></li>
+            @if (prod.Category != null)
+            {
+                <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index" asp-route-category="@prod.Category.Slug" class="text-decoration-none">@prod.Category.Name</a></li>
+            }
+            <li class="breadcrumb-item active text-truncate" style="max-width: 300px;" aria-current="page">@prod.Name</li>
+        </ol>
+    </nav>
+
+    <!-- Main Product Card -->
+    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white mb-5">
+        <div class="row g-4 g-lg-5">
+            <!-- Left: Gallery -->
+            <div class="col-lg-5">
+                <div class="position-relative bg-light rounded-4 overflow-hidden mb-3 border text-center p-3" style="min-height: 400px; display: flex; align-items: center; justify-content: center;">
+                    <img id="mainProductImage" src="@(prod.MainImageUrl ?? "/images/default-product.png")" alt="@prod.Name" class="img-fluid rounded-3" style="max-height: 380px; object-fit: contain; transition: opacity 0.2s;" />
+                    @if (prod.DiscountPercentage > 0)
+                    {
+                        <div class="badge-sale">-@prod.DiscountPercentage%</div>
+                    }
+                </div>
+
+                <!-- Thumbnails Strip -->
+                @if (prod.Images.Any())
+                {
+                    <div class="d-flex gap-2 overflow-auto pb-2">
+                        <div class="border rounded-3 p-1 cursor-pointer product-thumb-item border-primary" style="width: 70px; height: 70px; flex-shrink: 0;" onclick="changeMainImage('@prod.MainImageUrl', this)">
+                            <img src="@prod.MainImageUrl" class="w-100 h-100 object-fit-cover rounded" alt="Thumbnail" />
+                        </div>
+                        @foreach (var img in prod.Images)
+                        {
+                            <div class="border rounded-3 p-1 cursor-pointer product-thumb-item" style="width: 70px; height: 70px; flex-shrink: 0;" onclick="changeMainImage('@img.ImageUrl', this)">
+                                <img src="@img.ImageUrl" class="w-100 h-100 object-fit-cover rounded" alt="Thumbnail" />
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Right: Details & Purchase -->
+            <div class="col-lg-7 d-flex flex-column">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">
+                        @(prod.Category?.Name ?? "Chính hãng")
+                    </span>
+                    <span class="text-muted small">Mã SP (SKU): <strong>@prod.Sku</strong></span>
+                </div>
+
+                <h2 class="fw-bold mb-3">@prod.Name</h2>
+
+                <!-- Ratings and Reviews Stats -->
+                <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
+                    <div class="d-flex align-items-center gap-1 text-warning">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(prod.RatingAverage))
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star text-muted"></i>
+                            }
+                        }
+                        <span class="fw-bold ms-1 text-dark">@prod.RatingAverage</span>
+                    </div>
+                    <span class="text-muted">|</span>
+                    <span class="text-muted small"><strong class="text-dark">@prod.ReviewCount</strong> đánh giá</span>
+                    <span class="text-muted">|</span>
+                    <span class="text-muted small"><i class="bi bi-eye me-1"></i>@prod.ViewCount lượt xem</span>
+                </div>
+
+                <!-- Price Box -->
+                <div class="p-3 bg-light rounded-3 mb-4 d-flex align-items-baseline gap-3">
+                    <span class="display-6 fw-bold text-danger">@prod.Price.ToString("#,##0")₫</span>
+                    @if (prod.OriginalPrice.HasValue && prod.OriginalPrice > prod.Price)
+                    {
+                        <span class="fs-5 text-muted text-decoration-line-through">@prod.OriginalPrice.Value.ToString("#,##0")₫</span>
+                        <span class="badge bg-danger">Tiết kiệm @((prod.OriginalPrice.Value - prod.Price).ToString("#,##0"))₫</span>
+                    }
+                </div>
+
+                <!-- Short description -->
+                @if (!string.IsNullOrEmpty(prod.ShortDescription))
+                {
+                    <p class="text-secondary small mb-4">@prod.ShortDescription</p>
+                }
+
+                <!-- Stock availability -->
+                <div class="mb-4">
+                    <div class="small fw-semibold mb-2">Tình trạng kho:</div>
+                    @if (prod.IsInStock)
+                    {
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+                            <i class="bi bi-check-circle-fill me-1"></i> Còn hàng (Có sẵn @prod.StockQuantity sản phẩm)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">
+                            <i class="bi bi-x-circle-fill me-1"></i> Tạm hết hàng
+                        </span>
+                    }
+                </div>
+
+                <!-- Quantity & Action Buttons -->
+                @if (prod.IsInStock)
+                {
+                    <div class="mb-4">
+                        <label class="form-label small fw-semibold">Số lượng mua:</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="qty-group">
+                                <button type="button" class="qty-btn" onclick="changeQtyInput('detailQtyInput', -1, @prod.StockQuantity)">-</button>
+                                <input type="number" id="detailQtyInput" class="qty-input" value="1" min="1" max="@prod.StockQuantity" readonly />
+                                <button type="button" class="qty-btn" onclick="changeQtyInput('detailQtyInput', 1, @prod.StockQuantity)">+</button>
+                            </div>
+                            <span class="text-muted small">Tối đa @prod.StockQuantity sản phẩm</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-3 mt-auto">
+                        <button type="button" class="btn btn-outline-primary px-4 py-3 fw-bold rounded-3 flex-grow-1 d-flex align-items-center justify-content-center gap-2" 
+                                onclick="addToCart(@prod.Id, document.getElementById('detailQtyInput').value, this)">
+                            <i class="bi bi-cart-plus fs-5"></i> Thêm vào giỏ hàng
+                        </button>
+                        <button type="button" class="btn btn-primary px-5 py-3 fw-bold rounded-3 flex-grow-1 shadow d-flex align-items-center justify-content-center gap-2"
+                                onclick="directBuyNow(@prod.Id)">
+                            <i class="bi bi-lightning-charge-fill fs-5"></i> Mua ngay
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <button class="btn btn-secondary py-3 fw-bold rounded-3 w-100 disabled" disabled>
+                        Sản phẩm hiện đã hết hàng
+                    </button>
+                }
+
+                <!-- Benefits Guarantee -->
+                <div class="row g-2 mt-4 pt-3 border-top text-muted small">
+                    <div class="col-6"><i class="bi bi-shield-check text-primary me-1"></i> Bảo hành chính hãng 12T</div>
+                    <div class="col-6"><i class="bi bi-truck text-success me-1"></i> Miễn phí giao hàng toàn quốc</div>
+                    <div class="col-6"><i class="bi bi-arrow-repeat text-warning me-1"></i> Đổi mới 30 ngày nếu lỗi</div>
+                    <div class="col-6"><i class="bi bi-credit-card text-info me-1"></i> Hỗ trợ trả góp & COD</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details and Reviews Tabs -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-5">
+        <ul class="nav nav-tabs border-bottom mb-4" id="productTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-bold px-4 py-3" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc-pane" type="button" role="tab">
+                    <i class="bi bi-file-text me-2"></i>Mô Tả Chi Tiết
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold px-4 py-3" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs-pane" type="button" role="tab">
+                    <i class="bi bi-cpu me-2"></i>Thông Số Kỹ Thuật
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold px-4 py-3" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews-pane" type="button" role="tab">
+                    <i class="bi bi-chat-left-dots me-2"></i>Đánh Giá (@Model.Reviews.Count)
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="productTabsContent">
+            <!-- Tab 1: Description -->
+            <div class="tab-pane fade show active" id="desc-pane" role="tabpanel">
+                <div class="lh-lg text-secondary">
+                    <h5 class="fw-bold text-dark mb-3">Đặc điểm nổi bật của @prod.Name</h5>
+                    <p>@(prod.Description ?? prod.ShortDescription ?? "Thông tin sản phẩm đang được cập nhật.")</p>
+                </div>
+            </div>
+
+            <!-- Tab 2: Specs -->
+            <div class="tab-pane fade" id="specs-pane" role="tabpanel">
+                @if (Model.Specifications.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered mb-0">
+                            <tbody>
+                                @foreach (var spec in Model.Specifications)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold text-secondary" style="width: 30%;">@spec.Key</td>
+                                        <td class="text-dark">@spec.Value</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Thông số kỹ thuật tiêu chuẩn đang được cập nhật thêm.</p>
+                }
+            </div>
+
+            <!-- Tab 3: Reviews -->
+            <div class="tab-pane fade" id="reviews-pane" role="tabpanel">
+                <div class="row g-4">
+                    <!-- Review List -->
+                    <div class="col-lg-7">
+                        <h6 class="fw-bold mb-3">Nhận xét từ khách hàng</h6>
+                        @if (Model.Reviews.Any())
+                        {
+                            <div class="d-flex flex-column gap-3">
+                                @foreach (var rev in Model.Reviews)
+                                {
+                                    <div class="border p-3 rounded-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="fw-bold small text-dark">@(rev.User?.FullName ?? "Khách hàng")</div>
+                                            <span class="text-muted" style="font-size: 0.75rem;">@rev.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                        <div class="text-warning small mb-2">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= rev.Rating)
+                                                {
+                                                    <i class="bi bi-star-fill"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-star text-muted"></i>
+                                                }
+                                            }
+                                        </div>
+                                        <p class="text-secondary small mb-0">@rev.Comment</p>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-muted small py-3">
+                                Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên trải nghiệm và để lại nhận xét!
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Review Form -->
+                    <div class="col-lg-5">
+                        <div class="card border p-4 rounded-3 bg-light">
+                            <h6 class="fw-bold mb-3">Gửi đánh giá của bạn</h6>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <form asp-action="AddReview" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@prod.Id" />
+                                    <input type="hidden" name="slug" value="@prod.Slug" />
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-semibold">Đánh giá sao:</label>
+                                        <select name="rating" class="form-select form-select-sm">
+                                            <option value="5">⭐⭐⭐⭐⭐ (5/5) Cực kỳ hài lòng</option>
+                                            <option value="4">⭐⭐⭐⭐ (4/5) Hài lòng</option>
+                                            <option value="3">⭐⭐⭐ (3/5) Bình thường</option>
+                                            <option value="2">⭐⭐ (2/5) Không hài lòng</option>
+                                            <option value="1">⭐ (1/5) Rất tệ</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-semibold">Nội dung nhận xét:</label>
+                                        <textarea name="comment" class="form-control" rows="3" placeholder="Chia sẻ cảm nhận thực tế về chất lượng, đóng gói..." required></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold">
+                                        Gửi nhận xét
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <p class="small text-muted mb-3">Vui lòng đăng nhập để có thể gửi đánh giá cho sản phẩm này.</p>
+                                <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-outline-primary btn-sm">
+                                    Đăng nhập để đánh giá
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    @if (Model.RelatedProducts.Any())
+    {
+        <div class="mb-5">
+            <h4 class="fw-bold mb-3">
+                <i class="bi bi-collection-fill text-primary me-2"></i>Sản Phẩm Tương Tự
+            </h4>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+                @foreach (var rel in Model.RelatedProducts)
+                {
+                    <div class="col">
+                        @await Html.PartialAsync("_ProductCard", rel)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function directBuyNow(productId) {
+            const qty = document.getElementById('detailQtyInput')?.value || 1;
+            window.location.href = `/Checkout/BuyNow?productId=${productId}&quantity=${qty}`;
+        }
+    </script>
+}

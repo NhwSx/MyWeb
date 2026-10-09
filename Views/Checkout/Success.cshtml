@@ -1,0 +1,80 @@
+@model MyWebShop.Models.ViewModels.OrderSuccessViewModel
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 text-center bg-white mb-4">
+                <div class="rounded-circle bg-success-subtle text-success d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-check2-circle fs-1"></i>
+                </div>
+
+                <h3 class="fw-bold mb-2">Đặt hàng thành công!</h3>
+                <p class="text-secondary mb-4">
+                    Cảm ơn bạn đã tin tưởng mua sắm tại TechZone. Đơn hàng của bạn đã được ghi nhận vào hệ thống và đang được chuẩn bị để vận chuyển.
+                </p>
+
+                <!-- Order Code Badge Box -->
+                <div class="alert alert-light border p-3 rounded-3 mb-4 d-flex flex-wrap justify-content-around align-items-center gap-3">
+                    <div>
+                        <div class="text-muted small">Mã đơn hàng:</div>
+                        <strong class="fs-5 text-primary">@Model.OrderCode</strong>
+                    </div>
+                    <div>
+                        <div class="text-muted small">Phương thức:</div>
+                        <strong>@Model.PaymentMethod</strong>
+                    </div>
+                    <div>
+                        <div class="text-muted small">Trạng thái thanh toán:</div>
+                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning">
+                            @Model.PaymentStatus
+                        </span>
+                    </div>
+                    <div>
+                        <div class="text-muted small">Tổng thanh toán:</div>
+                        <strong class="fs-5 text-danger">@Model.TotalAmount.ToString("#,##0")₫</strong>
+                    </div>
+                </div>
+
+                <!-- Customer Details Card -->
+                <div class="card border text-start p-3 rounded-3 bg-light mb-4">
+                    <h6 class="fw-bold mb-2 text-dark"><i class="bi bi-geo-alt text-danger me-1"></i> Thông tin giao hàng</h6>
+                    <div class="small text-secondary">Người nhận: <strong class="text-dark">@Model.CustomerName</strong> (@Model.CustomerPhone)</div>
+                    <div class="small text-secondary">Địa chỉ giao: <strong class="text-dark">@Model.ShippingAddress</strong></div>
+                </div>
+
+                <!-- Items list -->
+                <div class="text-start mb-4">
+                    <h6 class="fw-bold mb-3">Chi tiết sản phẩm đã đặt:</h6>
+                    <div class="d-flex flex-column gap-2">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="d-flex align-items-center justify-content-between p-2 border rounded-3 bg-white">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="@(item.ProductImageUrl ?? "/images/default-product.png")" alt="@item.ProductName" class="rounded object-fit-cover" style="width: 48px; height: 48px;" />
+                                    <div>
+                                        <div class="fw-semibold small">@item.ProductName</div>
+                                        <div class="text-muted small">Số lượng: @item.Quantity × @item.UnitPrice.ToString("#,##0")₫</div>
+                                    </div>
+                                </div>
+                                <div class="fw-bold text-danger small">@item.TotalPrice.ToString("#,##0")₫</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="d-flex flex-wrap justify-content-center gap-3 pt-3 border-top">
+                    <a asp-controller="Order" asp-action="Details" asp-route-code="@Model.OrderCode" class="btn btn-primary px-4 py-2 rounded-pill fw-bold">
+                        <i class="bi bi-receipt me-1"></i> Xem chi tiết đơn hàng
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+                        <i class="bi bi-shop me-1"></i> Tiếp tục mua sắm
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

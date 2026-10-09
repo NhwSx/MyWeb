@@ -1,0 +1,82 @@
+@model List<MyWebShop.Models.Entities.Category>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý danh mục sản phẩm";
+}
+
+<div class="row g-4">
+    <!-- Left: Add Category Form -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h5 class="fw-bold mb-3 pb-2 border-bottom">Thêm danh mục mới</h5>
+            <form asp-action="CreateCategory" method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Tên danh mục <span class="text-danger">*</span></label>
+                    <input name="Name" class="form-control" placeholder="Ví dụ: Phụ kiện âm thanh" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Icon Bootstrap</label>
+                    <input name="IconClass" class="form-control" placeholder="bi-headphones" value="bi-tag" />
+                    <span class="text-muted" style="font-size: 0.75rem;">Ví dụ: bi-phone, bi-laptop, bi-headphones...</span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Mô tả ngắn</label>
+                    <textarea name="Description" class="form-control" rows="2" placeholder="Mô tả danh mục..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Thứ tự hiển thị</label>
+                    <input name="DisplayOrder" type="number" class="form-control" value="10" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2">
+                    <i class="bi bi-plus-lg me-1"></i> Tạo danh mục
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Right: Categories List -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h5 class="fw-bold mb-3 pb-2 border-bottom">Danh sách các danh mục hiện có (@Model.Count)</h5>
+            <div class="table-responsive">
+                <table class="table align-middle table-hover small">
+                    <thead class="bg-light">
+                        <tr>
+                            <th style="width: 50px;">Icon</th>
+                            <th>Tên danh mục</th>
+                            <th>Slug</th>
+                            <th>Số sản phẩm</th>
+                            <th>Thứ tự</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                        <i class="bi @c.IconClass"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <strong class="text-dark">@c.Name</strong>
+                                    <div class="text-muted text-truncate" style="max-width: 200px; font-size: 0.75rem;">@c.Description</div>
+                                </td>
+                                <td><code>@c.Slug</code></td>
+                                <td>
+                                    <span class="badge bg-light text-primary border">@c.Products.Count sản phẩm</span>
+                                </td>
+                                <td>@c.DisplayOrder</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

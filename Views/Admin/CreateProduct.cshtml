@@ -1,0 +1,127 @@
+@model MyWebShop.Models.ViewModels.ProductFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Thêm sản phẩm mới";
+}
+
+<div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-4" style="max-width: 900px; margin: 0 auto;">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <div>
+            <h4 class="fw-bold mb-1">Thêm sản phẩm mới</h4>
+            <p class="text-muted small mb-0">Nhập đầy đủ thông tin để hiển thị sản phẩm trên hệ thống</p>
+        </div>
+        <a asp-action="Products" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <form asp-action="CreateProduct" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2 mb-4"></div>
+
+        <div class="row g-3">
+            <!-- Tên sản phẩm -->
+            <div class="col-md-8">
+                <label asp-for="Name" class="form-label small fw-semibold">Tên sản phẩm <span class="text-danger">*</span></label>
+                <input asp-for="Name" class="form-control" placeholder="Ví dụ: iPhone 15 Pro Max 256GB" required />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <!-- Mã SKU -->
+            <div class="col-md-4">
+                <label asp-for="Sku" class="form-label small fw-semibold">Mã SKU <span class="text-danger">*</span></label>
+                <input asp-for="Sku" class="form-control text-uppercase" placeholder="IP15-256" required />
+                <span asp-validation-for="Sku" class="text-danger small"></span>
+            </div>
+
+            <!-- Danh mục -->
+            <div class="col-md-4">
+                <label asp-for="CategoryId" class="form-label small fw-semibold">Danh mục <span class="text-danger">*</span></label>
+                <select asp-for="CategoryId" class="form-select" required>
+                    @foreach (var c in Model.Categories)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Giá bán -->
+            <div class="col-md-4">
+                <label asp-for="Price" class="form-label small fw-semibold">Giá bán thực tế (VNĐ) <span class="text-danger">*</span></label>
+                <input asp-for="Price" type="number" class="form-control" placeholder="29990000" required />
+                <span asp-validation-for="Price" class="text-danger small"></span>
+            </div>
+
+            <!-- Giá gốc -->
+            <div class="col-md-4">
+                <label asp-for="OriginalPrice" class="form-label small fw-semibold">Giá gốc trước giảm (VNĐ)</label>
+                <input asp-for="OriginalPrice" type="number" class="form-control" placeholder="34990000" />
+            </div>
+
+            <!-- Số lượng tồn kho -->
+            <div class="col-md-4">
+                <label asp-for="StockQuantity" class="form-label small fw-semibold">Số lượng tồn kho <span class="text-danger">*</span></label>
+                <input asp-for="StockQuantity" type="number" class="form-control" required />
+                <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+            </div>
+
+            <!-- URL Ảnh chính -->
+            <div class="col-md-8">
+                <label asp-for="MainImageUrl" class="form-label small fw-semibold">URL Hình ảnh chính</label>
+                <input asp-for="MainImageUrl" class="form-control" placeholder="https://images.unsplash.com/..." />
+                <span class="text-muted" style="font-size: 0.75rem;">Dán link ảnh từ Unsplash hoặc link CDN</span>
+            </div>
+
+            <!-- Mô tả ngắn -->
+            <div class="col-12">
+                <label asp-for="ShortDescription" class="form-label small fw-semibold">Mô tả ngắn</label>
+                <textarea asp-for="ShortDescription" class="form-control" rows="2" placeholder="Tóm tắt đặc điểm nổi bật..."></textarea>
+            </div>
+
+            <!-- Mô tả chi tiết -->
+            <div class="col-12">
+                <label asp-for="Description" class="form-label small fw-semibold">Mô tả chi tiết</label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nội dung giới thiệu chi tiết sản phẩm..."></textarea>
+            </div>
+
+            <!-- Thông số kỹ thuật JSON -->
+            <div class="col-12">
+                <label asp-for="SpecificationsJson" class="form-label small fw-semibold">Thông số kỹ thuật (Định dạng JSON)</label>
+                <textarea asp-for="SpecificationsJson" class="form-control font-monospace small" rows="3" placeholder='{"Màn hình":"6.7 inch OLED","Chip CPU":"A17 Pro"}'></textarea>
+            </div>
+
+            <!-- Badges toggles -->
+            <div class="col-12">
+                <div class="d-flex flex-wrap gap-4 p-3 bg-light rounded-3">
+                    <div class="form-check">
+                        <input asp-for="IsFeatured" class="form-check-input" />
+                        <label asp-for="IsFeatured" class="form-check-label small fw-semibold">Sản phẩm nổi bật</label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="IsNew" class="form-check-input" />
+                        <label asp-for="IsNew" class="form-check-label small fw-semibold">Sản phẩm mới</label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="IsBestSeller" class="form-check-input" />
+                        <label asp-for="IsBestSeller" class="form-check-label small fw-semibold">Bán chạy</label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label small fw-semibold">Kích hoạt hiển thị</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-primary px-4 py-2 fw-bold shadow-sm">
+                    <i class="bi bi-save me-1"></i> Lưu sản phẩm
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

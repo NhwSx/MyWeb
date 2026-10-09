@@ -1,0 +1,182 @@
+@using Microsoft.AspNetCore.Identity
+@using MyWebShop.Models.Entities
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " - Quản Trị Hệ Thống" : "TechZone Admin Portal")</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        .admin-sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background-color: #0f172a;
+            color: #94a3b8;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+        .admin-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 8px;
+            margin: 4px 12px;
+            transition: all 0.2s;
+        }
+        .admin-nav-link:hover, .admin-nav-link.active {
+            color: #ffffff;
+            background-color: #1e293b;
+        }
+        .admin-nav-link.active {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+        .admin-content {
+            flex-grow: 1;
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .admin-topbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 24px;
+        }
+        .stat-card {
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Server Flash Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <input type="hidden" id="server-success-msg" value="@TempData["SuccessMessage"]" />
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <input type="hidden" id="server-error-msg" value="@TempData["ErrorMessage"]" />
+    }
+
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar d-flex flex-column">
+            <div class="p-4 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2">
+                <i class="bi bi-shield-lock-fill text-primary fs-3"></i>
+                <div>
+                    <h5 class="text-white fw-bold mb-0">TechZone</h5>
+                    <span class="badge bg-primary text-white" style="font-size: 0.7rem;">Admin Control</span>
+                </div>
+            </div>
+
+            <nav class="mt-3 flex-grow-1">
+                <a asp-controller="Admin" asp-action="Index" class="admin-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a asp-controller="Admin" asp-action="Products" class="admin-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Products" ? "active" : "")">
+                    <i class="bi bi-box-seam"></i> Quản lý sản phẩm
+                </a>
+                <a asp-controller="Admin" asp-action="CreateProduct" class="admin-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "CreateProduct" ? "active" : "")">
+                    <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
+                </a>
+                <a asp-controller="Admin" asp-action="Categories" class="admin-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Categories" ? "active" : "")">
+                    <i class="bi bi-tags"></i> Danh mục sản phẩm
+                </a>
+                <a asp-controller="Admin" asp-action="Orders" class="admin-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Orders" ? "active" : "")">
+                    <i class="bi bi-cart-check"></i> Quản lý đơn hàng
+                </a>
+                <a asp-controller="Admin" asp-action="Users" class="admin-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Users" ? "active" : "")">
+                    <i class="bi bi-people"></i> Tài khoản người dùng
+                </a>
+                
+                <hr class="mx-3 my-3 border-secondary border-opacity-25" />
+                
+                <a asp-controller="Home" asp-action="Index" class="admin-nav-link text-warning">
+                    <i class="bi bi-shop"></i> Quay về Cửa Hàng
+                </a>
+            </nav>
+
+            <div class="p-3 border-top border-secondary border-opacity-25">
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="admin-content">
+            <!-- Topbar -->
+            <header class="admin-topbar d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <h5 class="mb-0 fw-bold text-dark">@(ViewData["Title"] ?? "Admin Dashboard")</h5>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    @{
+                        var adminUser = await UserManager.GetUserAsync(User);
+                    }
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; font-weight: 700;">
+                            A
+                        </div>
+                        <div>
+                            <div class="fw-bold small">@(adminUser?.FullName ?? "Administrator")</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Quản trị viên</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="p-4 flex-grow-1">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Bootstrap 5.3 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,283 @@
+@model MyWebShop.Models.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Tài khoản của tôi";
+    var orders = ViewBag.Orders as List<MyWebShop.Models.Entities.Order> ?? new List<MyWebShop.Models.Entities.Order>();
+    var addresses = ViewBag.Addresses as List<MyWebShop.Models.Entities.UserAddress> ?? new List<MyWebShop.Models.Entities.UserAddress>();
+}
+
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3">
+            <div class="card border-0 shadow-sm p-4 text-center rounded-4 mb-4">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3 shadow-sm" style="width: 72px; height: 72px; font-size: 1.8rem; font-weight: 700;">
+                    @(Model.FullName.Length > 0 ? Model.FullName.Substring(0, 1).ToUpper() : "U")
+                </div>
+                <h5 class="fw-bold mb-1">@Model.FullName</h5>
+                <p class="text-muted small mb-3">@Model.Email</p>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill small">
+                    <i class="bi bi-star-fill text-warning me-1"></i> Thành viên TechZone
+                </span>
+            </div>
+
+            <div class="list-group border-0 shadow-sm rounded-4 overflow-hidden nav nav-pills" id="profileTabs" role="tablist">
+                <button class="list-group-item list-group-item-action active py-3 px-4 border-0 d-flex align-items-center gap-3" id="tab-info-btn" data-bs-toggle="pill" data-bs-target="#tab-info" type="button" role="tab">
+                    <i class="bi bi-person-fill fs-5 text-primary"></i> Thông tin cá nhân
+                </button>
+                <button class="list-group-item list-group-item-action py-3 px-4 border-0 d-flex align-items-center gap-3" id="tab-orders-btn" data-bs-toggle="pill" data-bs-target="#tab-orders" type="button" role="tab">
+                    <i class="bi bi-receipt fs-5 text-success"></i> Đơn hàng (@orders.Count)
+                </button>
+                <button class="list-group-item list-group-item-action py-3 px-4 border-0 d-flex align-items-center gap-3" id="tab-address-btn" data-bs-toggle="pill" data-bs-target="#tab-address" type="button" role="tab">
+                    <i class="bi bi-geo-alt-fill fs-5 text-danger"></i> Sổ địa chỉ (@addresses.Count)
+                </button>
+                <button class="list-group-item list-group-item-action py-3 px-4 border-0 d-flex align-items-center gap-3" id="tab-password-btn" data-bs-toggle="pill" data-bs-target="#tab-password" type="button" role="tab">
+                    <i class="bi bi-shield-lock-fill fs-5 text-warning"></i> Đổi mật khẩu
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="col-lg-9">
+            <div class="tab-content" id="profileTabsContent">
+                
+                <!-- Tab 1: Profile Info -->
+                <div class="tab-pane fade show active" id="tab-info" role="tabpanel">
+                    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4">
+                        <h4 class="fw-bold mb-1">Hồ sơ cá nhân</h4>
+                        <p class="text-muted small mb-4">Quản lý thông tin tài khoản để bảo vệ đơn hàng và ưu đãi</p>
+
+                        <form asp-action="Profile" method="post">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2"></div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="FullName" class="form-label fw-semibold small">Họ và tên</label>
+                                    <input asp-for="FullName" class="form-control" />
+                                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Email" class="form-label fw-semibold small">Email (Tên đăng nhập)</label>
+                                    <input asp-for="Email" class="form-control bg-light" readonly />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="PhoneNumber" class="form-label fw-semibold small">Số điện thoại</label>
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="0901234567" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Address" class="form-label fw-semibold small">Địa chỉ mặc định</label>
+                                    <input asp-for="Address" class="form-control" placeholder="Số nhà, tên đường..." />
+                                </div>
+
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-primary px-4 fw-bold">
+                                        <i class="bi bi-save me-1"></i> Lưu thay đổi
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Orders -->
+                <div class="tab-pane fade" id="tab-orders" role="tabpanel">
+                    <div class="card border-0 shadow-sm p-4 rounded-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h4 class="fw-bold mb-1">Đơn hàng của bạn</h4>
+                                <p class="text-muted small mb-0">Theo dõi tiến độ giao hàng và lịch sử mua sắm</p>
+                            </div>
+                            <a asp-controller="Product" asp-action="Index" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-plus-lg me-1"></i> Mua thêm sản phẩm
+                            </a>
+                        </div>
+
+                        @if (orders.Any())
+                        {
+                            <div class="d-flex flex-column gap-3">
+                                @foreach (var o in orders)
+                                {
+                                    <div class="card border p-3 rounded-3 shadow-none">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center pb-2 border-bottom mb-2 gap-2">
+                                            <div>
+                                                <span class="fw-bold text-primary">@o.OrderCode</span>
+                                                <span class="text-muted small ms-2">@o.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                                            </div>
+                                            <span class="badge @o.StatusBadgeClass px-3 py-2 rounded-pill">
+                                                @o.StatusDisplayName
+                                            </span>
+                                        </div>
+
+                                        <div class="d-flex flex-column gap-2 mb-3">
+                                            @foreach (var item in o.Items)
+                                            {
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <img src="@(item.ProductImageUrl ?? "/images/default-product.png")" alt="@item.ProductName" class="rounded object-fit-cover" style="width: 48px; height: 48px;" />
+                                                        <div>
+                                                            <div class="fw-semibold small">@item.ProductName</div>
+                                                            <div class="text-muted small">Số lượng: @item.Quantity × @item.UnitPrice.ToString("#,##0")₫</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="fw-bold text-danger small">@item.TotalPrice.ToString("#,##0")₫</div>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center pt-2 border-top">
+                                            <div class="small">
+                                                Tổng tiền: <strong class="fs-6 text-danger">@o.TotalAmount.ToString("#,##0")₫</strong> 
+                                                <span class="badge bg-light text-secondary ms-2 border">@o.PaymentMethod</span>
+                                            </div>
+                                            <a asp-controller="Order" asp-action="Details" asp-route-id="@o.Id" class="btn btn-outline-primary btn-sm px-3">
+                                                Chi tiết đơn hàng <i class="bi bi-chevron-right ms-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+                                <i class="bi bi-bag-x text-muted" style="font-size: 3.5rem;"></i>
+                                <h5 class="fw-bold mt-3">Bạn chưa có đơn hàng nào</h5>
+                                <p class="text-muted small">Hãy khám phá các thiết bị công nghệ hấp dẫn và mua sắm ngay hôm nay!</p>
+                                <a asp-controller="Product" asp-action="Index" class="btn btn-primary px-4 mt-2">
+                                    Khám phá sản phẩm
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Tab 3: Addresses -->
+                <div class="tab-pane fade" id="tab-address" role="tabpanel">
+                    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h4 class="fw-bold mb-1">Địa chỉ nhận hàng</h4>
+                                <p class="text-muted small mb-0">Địa chỉ được lưu để bạn thanh toán nhanh chóng hơn</p>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#newAddressForm">
+                                <i class="bi bi-plus-lg me-1"></i> Thêm địa chỉ mới
+                            </button>
+                        </div>
+
+                        <!-- Collapse Add Address Form -->
+                        <div class="collapse mb-4" id="newAddressForm">
+                            <div class="card border p-4 rounded-3 bg-light">
+                                <h6 class="fw-bold mb-3">Thêm địa chỉ giao hàng</h6>
+                                <form asp-action="AddAddress" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold">Họ và tên người nhận</label>
+                                            <input name="FullName" class="form-control" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold">Số điện thoại</label>
+                                            <input name="PhoneNumber" class="form-control" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold">Tỉnh / Thành phố</label>
+                                            <input name="ProvinceCity" class="form-control" placeholder="Hà Nội, TP.HCM..." required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold">Quận / Huyện</label>
+                                            <input name="WardDistrict" class="form-control" placeholder="Quận 1, Cầu Giấy..." required />
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small fw-semibold">Địa chỉ chi tiết</label>
+                                            <input name="StreetAddress" class="form-control" placeholder="Số 123 đường ABC..." required />
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="IsDefault" value="true" id="isDefaultCheck">
+                                                <label class="form-check-label small" for="isDefaultCheck">
+                                                    Đặt làm địa chỉ nhận hàng mặc định
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary btn-sm px-3">Lưu địa chỉ</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Address List -->
+                        <div class="row g-3">
+                            @if (addresses.Any())
+                            {
+                                @foreach (var addr in addresses)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="card border p-3 rounded-3 h-100 position-relative @(addr.IsDefault ? "border-primary bg-primary-subtle bg-opacity-10" : "")">
+                                            @if (addr.IsDefault)
+                                            {
+                                                <span class="badge bg-primary position-absolute top-0 end-0 m-3">Mặc định</span>
+                                            }
+                                            <div class="fw-bold mb-1">@addr.FullName</div>
+                                            <div class="text-muted small mb-2"><i class="bi bi-telephone me-1"></i> @addr.PhoneNumber</div>
+                                            <div class="small text-secondary">
+                                                <i class="bi bi-geo-alt me-1"></i> @addr.StreetAddress, @addr.WardDistrict, @addr.ProvinceCity
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="col-12 text-center py-4 text-muted">
+                                    Chưa có địa chỉ phụ được lưu. Bạn có thể thêm địa chỉ ở trên.
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Change Password -->
+                <div class="tab-pane fade" id="tab-password" role="tabpanel">
+                    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4">
+                        <h4 class="fw-bold mb-1">Đổi mật khẩu</h4>
+                        <p class="text-muted small mb-4">Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác</p>
+
+                        <form asp-action="ChangePassword" method="post" style="max-width: 480px;">
+                            @Html.AntiForgeryToken()
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Mật khẩu hiện tại</label>
+                                <input name="CurrentPassword" type="password" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Mật khẩu mới</label>
+                                <input name="NewPassword" type="password" class="form-control" placeholder="Tối thiểu 6 ký tự" required />
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold small">Xác nhận mật khẩu mới</label>
+                                <input name="ConfirmPassword" type="password" class="form-control" required />
+                            </div>
+
+                            <button type="submit" class="btn btn-warning fw-bold px-4">
+                                <i class="bi bi-shield-check me-1"></i> Cập nhật mật khẩu mới
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

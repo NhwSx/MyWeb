@@ -1,0 +1,113 @@
+@model MyWebShop.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Đăng nhập tài khoản";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <div class="card border-0 shadow-card p-4 p-md-5" style="border-radius: 20px;">
+                <div class="text-center mb-4">
+                    <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                        <i class="bi bi-person-circle fs-2"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">Đăng nhập</h3>
+                    <p class="text-muted small">Chào mừng bạn quay trở lại với TechZone Mall</p>
+                </div>
+
+                <!-- Quick Test Credentials Box -->
+                <div class="alert alert-info border-0 rounded-3 p-3 mb-4" style="background-color: #eff6ff;">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-lightning-charge-fill text-primary"></i>
+                        <strong class="small text-primary">Tài khoản thử nghiệm sẵn có:</strong>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1" onclick="fillCredentials('admin@eshop.com', 'Admin@123456')">
+                            <i class="bi bi-shield-lock me-1"></i> Admin
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary flex-grow-1" onclick="fillCredentials('user@eshop.com', 'User@123456')">
+                            <i class="bi bi-person me-1"></i> Khách hàng
+                        </button>
+                    </div>
+                </div>
+
+                <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" id="loginForm">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2" role="alert"></div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold small">Địa chỉ Email <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                            <input asp-for="Email" class="form-control border-start-0 ps-0" placeholder="name@example.com" id="loginEmail" autocomplete="email" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label asp-for="Password" class="form-label fw-semibold small mb-0">Mật khẩu <span class="text-danger">*</span></label>
+                            <a asp-action="ForgotPassword" class="small text-primary text-decoration-none">Quên mật khẩu?</a>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                            <input asp-for="Password" type="password" class="form-control border-start-0 ps-0" placeholder="••••••••" id="loginPassword" />
+                            <button type="button" class="btn btn-light border border-start-0" onclick="togglePasswordVisibility('loginPassword', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Remember me -->
+                    <div class="form-check mb-4">
+                        <input asp-for="RememberMe" class="form-check-input" id="rememberMeCheck" />
+                        <label class="form-check-label small text-secondary" for="rememberMeCheck">
+                            Ghi nhớ phiên đăng nhập trên thiết bị này
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm" id="btnSubmitLogin">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                    </button>
+                </form>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                    <p class="small text-muted mb-0">
+                        Chưa có tài khoản? 
+                        <a asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="fw-bold text-primary text-decoration-none">
+                            Đăng ký ngay
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function fillCredentials(email, pass) {
+            document.getElementById('loginEmail').value = email;
+            document.getElementById('loginPassword').value = pass;
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+    </script>
+}

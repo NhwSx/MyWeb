@@ -1,0 +1,217 @@
+@model MyWebShop.Models.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Trang Chủ - TechZone Mall Công Nghệ Chính Hãng";
+}
+
+<!-- Hero Banner Section -->
+<div class="container mt-4 mb-5">
+    <div class="row g-4 align-items-stretch">
+        <div class="col-lg-8">
+            <div class="hero-slider-card p-4 p-md-5 h-100 d-flex flex-column justify-content-center">
+                <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill align-self-start mb-3">
+                    <i class="bi bi-stars me-1"></i> Siêu Phẩm Công Nghệ Mới Nhất 2026
+                </span>
+                <h1 class="display-5 fw-bold mb-3">iPhone 15 Pro Max & Galaxy S24 Ultra</h1>
+                <p class="fs-6 opacity-90 mb-4" style="max-width: 520px;">
+                    Trải nghiệm hiệu năng vượt trội với chip tiến trình 3nm, camera nhiếp ảnh zoom viễn vọng đỉnh cao và trợ lý thông minh nhân tạo thế hệ mới.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-light text-primary px-4 py-2 fw-bold rounded-pill shadow">
+                        <i class="bi bi-cart3 me-1"></i> Mua ngay giá sốc
+                    </a>
+                    <a asp-controller="Product" asp-action="Index" asp-route-category="dien-thoai-tablet" class="btn btn-outline-light px-4 py-2 fw-semibold rounded-pill">
+                        Khám phá điện thoại
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 d-flex flex-column gap-3">
+            <div class="card border-0 rounded-4 p-4 text-white flex-grow-1 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, #0f172a, #334155);">
+                <span class="badge bg-danger rounded-pill px-2 py-1 align-self-start mb-2">HOT DEAL</span>
+                <h5 class="fw-bold mb-1">MacBook Pro M3 Max</h5>
+                <p class="small text-white-50 mb-3">Đỉnh cao đồ họa & lập trình cho chuyên gia</p>
+                <a asp-controller="Product" asp-action="Index" asp-route-category="laptop-may-tinh" class="btn btn-sm btn-outline-light align-self-start rounded-pill">
+                    Xem chi tiết <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card border-0 rounded-4 p-4 text-dark flex-grow-1 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, #fed7aa, #fdba74);">
+                <span class="badge bg-dark rounded-pill px-2 py-1 align-self-start mb-2">ƯU ĐÃI THÁNG</span>
+                <h5 class="fw-bold mb-1">Sony & Marshall Sound</h5>
+                <p class="small text-secondary mb-3">Âm thanh Hi-Res, chống ồn chủ động đỉnh cao</p>
+                <a asp-controller="Product" asp-action="Index" asp-route-category="tai-nghe-am-thanh" class="btn btn-sm btn-dark align-self-start rounded-pill">
+                    Xem sản phẩm <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Value Props -->
+<div class="container mb-5">
+    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+        <div class="row g-3 text-center">
+            <div class="col-6 col-md-3 border-end border-light-subtle">
+                <div class="d-flex align-items-center justify-content-center gap-3 py-2">
+                    <i class="bi bi-patch-check-fill fs-2 text-primary"></i>
+                    <div class="text-start">
+                        <div class="fw-bold small">100% Chính Hãng</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Bảo hành 12-24 tháng</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 border-end border-light-subtle">
+                <div class="d-flex align-items-center justify-content-center gap-3 py-2">
+                    <i class="bi bi-truck fs-2 text-success"></i>
+                    <div class="text-start">
+                        <div class="fw-bold small">Giao Hàng Siêu Tốc</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Freeship từ 10.000.000đ</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 border-end border-light-subtle">
+                <div class="d-flex align-items-center justify-content-center gap-3 py-2">
+                    <i class="bi bi-arrow-repeat fs-2 text-warning"></i>
+                    <div class="text-start">
+                        <div class="fw-bold small">Đổi Trả 30 Ngày</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Lỗi là đổi mới 1-1</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="d-flex align-items-center justify-content-center gap-3 py-2">
+                    <i class="bi bi-headset fs-2 text-danger"></i>
+                    <div class="text-start">
+                        <div class="fw-bold small">Hỗ Trợ 24/7</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Hotline: 1800 6868</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Grid -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0">
+            <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>Danh Mục Nổi Bật
+        </h4>
+        <a asp-controller="Product" asp-action="Index" class="small fw-bold text-primary text-decoration-none">
+            Xem tất cả <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-3">
+        @foreach (var cat in Model.Categories)
+        {
+            <div class="col">
+                <a asp-controller="Product" asp-action="Index" asp-route-category="@cat.Slug" class="category-card h-100">
+                    <div class="category-icon-wrapper">
+                        <i class="bi @cat.IconClass"></i>
+                    </div>
+                    <span class="fw-bold small">@cat.Name</span>
+                    <span class="text-muted" style="font-size: 0.75rem;">@cat.Products.Count sản phẩm</span>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Flash Sale / Giảm giá sốc -->
+@if (Model.DiscountProducts.Any())
+{
+    <div class="container mb-5">
+        <div class="card border-0 rounded-4 p-4 shadow-sm" style="background: linear-gradient(135deg, #fff1f2, #ffe4e6);">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <h4 class="fw-bold text-danger mb-0">
+                        <i class="bi bi-lightning-charge-fill me-1"></i> GIẢM GIÁ SỐC HÔM NAY
+                    </h4>
+                    <span class="badge bg-danger text-white px-2 py-1">Flash Deals</span>
+                </div>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                    Xem tất cả deal <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                @foreach (var product in Model.DiscountProducts)
+                {
+                    <div class="col">
+                        @await Html.PartialAsync("_ProductCard", product)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Sản phẩm Nổi bật -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0">
+            <i class="bi bi-fire text-danger me-2"></i>Sản Phẩm Nổi Bật
+        </h4>
+        <a asp-controller="Product" asp-action="Index" class="small fw-bold text-primary text-decoration-none">
+            Xem tất cả <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+        @foreach (var product in Model.FeaturedProducts)
+        {
+            <div class="col">
+                @await Html.PartialAsync("_ProductCard", product)
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Sản phẩm Bán chạy -->
+@if (Model.BestSellerProducts.Any())
+{
+    <div class="container mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">
+                <i class="bi bi-trophy-fill text-warning me-2"></i>Bán Chạy Nhất
+            </h4>
+            <a asp-controller="Product" asp-action="Index" class="small fw-bold text-primary text-decoration-none">
+                Xem tất cả <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+            @foreach (var product in Model.BestSellerProducts)
+            {
+                <div class="col">
+                    @await Html.PartialAsync("_ProductCard", product)
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Sản phẩm Mới cập nhật -->
+@if (Model.NewArrivalProducts.Any())
+{
+    <div class="container mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">
+                <i class="bi bi-sparkles text-info me-2"></i>Hàng Mới Về
+            </h4>
+            <a asp-controller="Product" asp-action="Index" class="small fw-bold text-primary text-decoration-none">
+                Xem tất cả <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+            @foreach (var product in Model.NewArrivalProducts)
+            {
+                <div class="col">
+                    @await Html.PartialAsync("_ProductCard", product)
+                </div>
+            }
+        </div>
+    </div>
+}
